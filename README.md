@@ -1,2 +1,2 @@
-# Image-File-System
-A web application that stores and sorts images using JavaScript and PHP. 
+# Appointment Finder
+A web application that helps you with your appointments. 
