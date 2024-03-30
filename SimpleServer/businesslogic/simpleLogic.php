@@ -13,13 +13,13 @@ class SimpleLogic
     {
         switch ($method) {
             case "queryPersons":
-                $res = $this->dh->queryPersons();
+                $res = $this->dh->queryAppointments();
                 break;
             case "queryPersonById":
-                $res = $this->dh->queryPersonById($param);
+                $res = $this->dh->queryAppointmentById($param);
                 break;
             case "queryPersonByName":
-                $res = $this->dh->queryPersonByName($param);
+                $res = $this->dh->queryAppointmentByTitle($param);
                 break;
             default:
                 $res = null;
