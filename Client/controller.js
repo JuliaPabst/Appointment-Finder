@@ -19,10 +19,9 @@ function loaddata(searchterm) {
         type: "GET",
         url: "../Server/serviceHandler.php",
         cache: false,
-        data: {method: "queryPersonByName", param: searchterm},
+        data: {method: "queryAppointmentByTitle", param: searchterm},
         dataType: "json",
         success: function (response) {
-            
             $("#noOfentries").val(response.length);
             $("#searchResult").show(1000).delay(1000).hide(1000);
             data = response;

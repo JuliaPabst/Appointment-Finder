@@ -12,7 +12,7 @@ $result = $logic->handleRequest($method, $param);
 if ($result == null) {
     response("GET", 400, null);
 } else {
-    response("GET", 200, $result);
+    response("GET", "200", $result);
 }
 
 function response($method, $httpStatus, $data)

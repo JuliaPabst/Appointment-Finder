@@ -1,5 +1,5 @@
 <?php
-include("db/dataHandler.php");
+include("./db/dataHandler.php");
 
 class SimpleLogic
 {
@@ -18,7 +18,7 @@ class SimpleLogic
             case "queryAppointmentById":
                 $res = $this->dh->queryAppointmentById($param);
                 break;
-            case "queryAppointmentByName":
+            case "queryAppointmentByTitle":
                 $res = $this->dh->queryAppointmentByTitle($param);
                 break;
             default:
