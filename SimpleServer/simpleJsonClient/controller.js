@@ -2,7 +2,7 @@
 $(document).ready(function () {
     $("#searchResult").hide();
     $("#btn_Search").click(function (e) {
-       loaddata($("#seachfield").val());
+       loaddata($("#searchfield").val());
     });
 
 });
@@ -13,7 +13,7 @@ function loaddata(searchterm) {
         type: "GET",
         url: "../serviceHandler.php",
         cache: false,
-        data: {method: "queryPersonByName", param: searchterm},
+        data: {method: "queryAppointmentByName", param: searchterm},
         dataType: "json",
         success: function (response) {
             
