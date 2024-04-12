@@ -7,14 +7,11 @@ $(document).ready(function () {
        loaddata($("#seachfield").val());
     });
 
-    // load all Data 
+    $("#newAppointment").click(function (e) {
+        createNewAppointment();
+    });
+
     showOverview();
-
-    // post new appointment to database 
-    createNewAppointment();
-
-    // load all options for one specific appointment 
-    showSingleAppointment();
 });
 
 function loaddata(searchterm) {
@@ -34,12 +31,28 @@ function loaddata(searchterm) {
 
 }
 
+   // load all Data 
 function showOverview(){
 }
 
-function showSingleAppointment(){
+// post new appointment to database 
+function createNewAppointment(){
+    console.log("create");
+    let createContainer = $("<div class='createContainer'></div>");
+    let titleLabel = $("<label for='title' id='create-titleLabel'>Title</label>");
+    let titleInput = $("<input name='title' id='create-titleInput'>");
+    let locationLabel = $("<label for='location' id='create-locationLabel'>Location</label>");
+    let locationInput = $("<input name='location' id='create-locationInput'>");
+    let dateLabel = $("<input type ='date' name='date' id='create-dateLabel'>Date</label>");
+    let dateInput = $("<input name='date' id='create-dateInput'>");
+    let expirationDateLabel = $("<input type ='date' name='expirationDate' id='create-expirationDateLabel'>Expiration Date</label>");
+    let expirationDateInput = $("<input name='expirationDate' id='create-expirationDateInput'>");
+
+    createContainer.append(titleLabel, titleInput, locationLabel, locationInput, dateLabel, dateInput, expirationDateLabel, expirationDateInput);
+    $('#createAppointment').append(createContainer);
 }
 
-function createNewAppointment(){
+// load all options for one specific appointment 
+function showSingleAppointment(){
 }
 
