@@ -8,6 +8,14 @@ class DataHandler
         return $res;
     }
 
+    public function queryAllAppointments()
+    {
+        $result = array();
+        foreach ($this->queryAppointments() as $val) {
+                array_push($result, $val);
+        }
+        return $result;
+    }
     public function queryAppointmentById($id)
     {
         $result = array();

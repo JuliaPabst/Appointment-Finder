@@ -15,6 +15,9 @@ class SimpleLogic
             case "queryAppointments":
                 $res = $this->dh->queryAppointments();
                 break;
+            case "queryAllAppointments":
+                $res = $this->dh->queryAllAppointments();
+                break;
             case "queryAppointmentById":
                 $res = $this->dh->queryAppointmentById($param);
                 break;
