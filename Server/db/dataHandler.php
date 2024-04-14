@@ -34,11 +34,20 @@ class DataHandler
     {
         $demodata = [
             [new Appointment(1, "StudySession", "FH", "03.04.2024", "30.04.2024")],
-            [new Appointment(2, "StudySession", "McDonalds", "29.04.2025", "30.04.2024")],
-            [new Appointment(3, "Workout", "McFit", "29.04.2025", "30.04.2024")],
             [new Appointment(4, "Workout", "GymBros", "29.04.2025", "30.04.2024")],
-            [new Appointment(5, "Workout", "McFit", "29.08.2025", "30.07.2024")]
+        ];
+        return $demodata;
+    }
 
+    private static function getTimeSlotsDemoData()
+    {
+        $demodata = [
+            [new TimeSlot(1, '2024-04-14', '09:00', '10:00', 1)],
+            [new TimeSlot(2, '2024-04-14', '10:00', '11:00', 1)],
+            [new TimeSlot(3, '2024-04-15', '11:00', '12:00', 2)],
+            [new TimeSlot(4, '2024-04-15', '13:00', '14:00', 2)],
+            [new TimeSlot(5, '2024-04-16', '14:00', '15:00', 2)]
+			
         ];
         return $demodata;
     }
