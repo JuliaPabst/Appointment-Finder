@@ -39,8 +39,8 @@ function showOverview(){
         data: {method: "queryAllAppointments"},
         dataType: "json",
         success: function (response) {
-            //Todo Frontend: change where/how all appointments are being printed (currently printed at #appointments)
-            var appointmentList = $('#appointments');
+            //Todo Frontend: change where/how all appointments are being printed (currently printed at #appointmentList)
+            var appointmentList = $('#appointmentList');
             $.each(response, function( index, appointment ) {
                 var appointment = `
 
@@ -56,7 +56,7 @@ function showOverview(){
                 appointmentList.append(appointment);
             });
 
-            $("#searchResult").show(1000).delay(1000)
+            $("#appointmentList").show(1000).delay(1000)
             data = response;
         }
     });
