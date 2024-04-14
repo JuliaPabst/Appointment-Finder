@@ -42,7 +42,7 @@ class DataHandler
     {
         $demodata = [
             [new Appointment(1, "StudySession", "FH", "03.04.2024", "30.04.2024")],
-            [new Appointment(4, "Workout", "GymBros", "29.04.2025", "30.04.2024")],
+            [new Appointment(2, "Workout", "GymBros", "29.04.2025", "30.04.2024")],
         ];
         return $demodata;
     }
