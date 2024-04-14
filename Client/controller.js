@@ -39,12 +39,21 @@ function showOverview(){
         data: {method: "queryAllAppointments"},
         dataType: "json",
         success: function (response) {
-            $("#noOfentries").val(response.length);
-            $("#searchResult").show(1000).delay(1000).hide(1000);
+            //Todo Frontend: change where/how all appointments are being printed (currently printed at #appointments)
+            $.each(response, function( index, value ) {
+                $("#appointments").append($("<p></p>").text(value[0].title));
+                $("#appointments").append($("<p></p>").text(value[0].date));
+                $("#appointments").append($("<p></p>").text(value[0].location));
+                $("#appointments").append($("<p></p>").text(value[0].date));
+                $("#appointments").append($("<p></p>").text(value[0].expiration_date));
+            });
+
+            $("#searchResult").show(1000).delay(1000)
             data = response;
         }
     });
 }
+
 
 // post new appointment to database 
 function createNewAppointment(){
