@@ -40,12 +40,20 @@ function showOverview(){
         dataType: "json",
         success: function (response) {
             //Todo Frontend: change where/how all appointments are being printed (currently printed at #appointments)
-            $.each(response, function( index, value ) {
-                $("#appointments").append($("<p></p>").text(value[0].title));
-                $("#appointments").append($("<p></p>").text(value[0].date));
-                $("#appointments").append($("<p></p>").text(value[0].location));
-                $("#appointments").append($("<p></p>").text(value[0].date));
-                $("#appointments").append($("<p></p>").text(value[0].expiration_date));
+            var appointmentList = $('#appointments');
+            $.each(response, function( index, appointment ) {
+                var appointment = `
+
+                <div class="row appointment">
+                <h4>${appointment[0].title}</h4>
+                <ul>
+                <li>Title: ${appointment[0].title}</li>
+                <li>Date: ${appointment[0].date}</li>
+                <li>Location: ${appointment[0].location}</li>
+                <li>Title ${appointment[0].expiration_date}</li>
+                </ul>
+                `;
+                appointmentList.append(appointment);
             });
 
             $("#searchResult").show(1000).delay(1000)
