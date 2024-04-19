@@ -116,7 +116,73 @@ function submitNewAppointment(e){
  
 function showSingleAppointment(event){
 $("#fullPage").hide();
-console.log($(event.target).text());
+let title = $(event.target).text();
+
+let schedule = $('<div class="container mt-3"></div>');
+
+let headerRow = $('<div class="row"></div>');
+  
+let col = $(`
+      <div class="col">
+        <div class="card">
+          <div class="card-body text-center">
+            <h5 class="card-title">` + title + `</h5>
+          </div>
+        </div>
+      </div>
+    `);
+headerRow.append(col);
+schedule.append(headerRow);
+
+let row = $('<div class="row"></div>');
+    
+let nameColon = $(`
+        <div class="col">
+          <div class="card mb-3">
+            <div class="card-body">
+              <input class="form-control mb-2" placeholder="Dein Name" />
+              <button class="btn btn-primary">Buchen</button>
+            </div>
+          </div>
+        </div>
+      `);
+
+row.append(nameColon);
+    
+schedule.append(row);
+  
+
+let commentSection = $(`
+    <div class="container mt-3">
+      <h3>Kommentare</h3>
+      <textarea class="form-control mb-2" placeholder="Add comment"></textarea>
+      <button class="btn btn-secondary">Add comment</button>
+    </div>`
+);
+
+let body = $('body');
+body.append(schedule, commentSection);
+
+
+// get real Data 
+/*$.ajax({
+    type: "GET",
+    url: "../Server/serviceHandler.php",
+    cache: false,
+    data: {
+        method: "queryAppointmentByTitle",
+        title: title  // Titel als Parameter übergeben
+    },
+    dataType: "json",
+    success: function(response) {
+        console.log("Erfolg: ", response);
+        Do things with data
+    },
+    error: function(xhr, status, error) {
+        console.error("Fehler beim AJAX-Call: ", error);
+    }
+});
+*/
 
 }
 
