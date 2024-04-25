@@ -12,6 +12,7 @@ $(document).ready(function () {
     });
 
     showOverview();
+    showTimeslots(1);
 });
 
 function loaddata(searchterm) {
@@ -31,33 +32,55 @@ function loaddata(searchterm) {
 }
 
    // load all Data 
-function showOverview(){
+   function showOverview() {
     $.ajax({
         type: "GET",
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryAllAppointments"},
         dataType: "json",
-        success: function (response) {
-            //Todo Frontend: change where/how all appointments are being printed (currently printed at #appointmentList)
+        success: function(response) {
             var appointmentList = $('#appointmentList');
-            $.each(response, function( index, appointment ) {
-                var appointment = `
-
-                <div class="row appointment">
-                <h4>${appointment[0].title}</h4>
-                <ul>
-                <li>Title: ${appointment[0].title}</li>
-                <li>Date: ${appointment[0].date}</li>
-                <li>Location: ${appointment[0].location}</li>
-                <li>Title ${appointment[0].expiration_date}</li>
-                </ul>
+            $.each(response, function(index, appointment) {
+                var appointmentHTML = `
+                    <div class="row appointment">
+                        <h4>${appointment[0].title}</h4>
+                        <ul>
+                            <li>Title: ${appointment[0].title}</li>
+                            <li>Date: ${appointment[0].date}</li>
+                            <li>Location: ${appointment[0].location}</li>
+                            <li>Expiration date: ${appointment[0].expiration_date}</li>
+                        </ul>
+                    </div>
                 `;
-                appointmentList.append(appointment);
+                appointmentList.append(appointmentHTML);
             });
+        }
+    });
+}
 
-            $("#appointmentList").show(1000).delay(1000)
-            data = response;
+function showTimeslots(appointmentId) {
+    $.ajax({
+        type: "GET",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
+        dataType: "json",
+        success: function(response) {
+            var timeslotList = $('#timeslotList');
+            $.each(response, function(index, timeslot) {
+                var timeslotHTML = `
+                    <h4>Timeslot for Appointment ID${timeslot[0].fk_appointment_id}</h4>"
+                    <div class="row timeslot">
+                        <ul>
+                            <li>Date: ${timeslot[0].date}</li>
+                            <li>Begin Time: ${timeslot[0].begin_time}</li>
+                            <li>End time: ${timeslot[0].end_time}</li>
+                        </ul>
+                    </div>
+                `;
+                timeslotList.append(timeslotHTML);
+            });
         }
     });
 }

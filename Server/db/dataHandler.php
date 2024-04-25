@@ -8,6 +8,12 @@ class DataHandler
         return $res;
     }
 
+    public function queryTimeslots()
+    {
+        $res =  $this->getTimeSlotsDemoData();
+        return $res;
+    }
+
     public function queryAllAppointments()
     {
         $result = array();
@@ -32,6 +38,17 @@ class DataHandler
         $result = array();
         foreach ($this->queryAppointments() as $val) {
             if ($val[0]->title == $title) {
+                array_push($result, $val);
+            }
+        }
+        return $result;
+    }
+
+    public function queryTimeslotsByAppointmentId($fk_appointment_id)
+    {
+        $result = array();
+        foreach ($this->queryTimeslots() as $val) {
+            if ($val[0]->fk_appointment_id == $fk_appointment_id) {
                 array_push($result, $val);
             }
         }
