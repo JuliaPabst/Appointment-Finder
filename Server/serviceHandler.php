@@ -3,23 +3,31 @@ include("businesslogic/simpleLogic.php");
 
 $param = "";
 $method = "";
+$title = "";
+$location = "";
+$date = "";
+$expiration_date = "";
 
-isset($_GET["method"]) ? $method = $_GET["method"] : false;
-isset($_GET["param"]) ? $param = $_GET["param"] : false;
+isset($_POST["method"]) ? $method = $_POST["method"] : false;
+isset($_POST["param"]) ? $param = $_POST["param"] : false;
+isset($_POST["title"]) ? $title = $_POST["title"] : false;
+isset($_POST["location"]) ? $location = $_POST["location"] : false;
+isset($_POST["date"]) ? $date = $_POST["date"] : false;
+isset($_POST["expiration_date"]) ? $expiration_date = $_POST["expiration_date"] : false;
 
 $logic = new SimpleLogic();
-$result = $logic->handleRequest($method, $param);
+$result = $logic->handleRequest($method, $param, $title, $location, $date, $expiration_date);
 if ($result == null) {
-    response("GET", 400, null);
+    response("POST", 400, null);
 } else {
-    response("GET", "200", $result);
+    response("POST", "200", $result);
 }
 
 function response($method, $httpStatus, $data)
 {
     header('Content-Type: application/json');
     switch ($method) {
-        case "GET":
+        case "POST":
             http_response_code($httpStatus);
             echo (json_encode($data));
             break;

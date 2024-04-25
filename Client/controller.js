@@ -18,7 +18,7 @@ $(document).ready(function () {
 
 function loaddata(searchterm) {
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryAppointmentByTitle", param: searchterm},
@@ -35,13 +35,14 @@ function loaddata(searchterm) {
    // load all Data 
    function showOverview() {
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryAllAppointments"},
         dataType: "json",
         success: function(response) {
             var appointmentList = $('#appointmentList');
+            appointmentList.empty();
             $.each(response, function( index, appointment ) {
                 var appointmentHTML = `
 
@@ -62,7 +63,7 @@ function loaddata(searchterm) {
 
 function showTimeslots(appointmentId) {
     $.ajax({
-        type: "GET",
+        type: "POST",
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
@@ -102,39 +103,49 @@ function showNewAppointmentForm(){
 
     $("#createForm").on("submit", function (e) {
         e.preventDefault();
+        //console.log(e); // Print the event object to the console
         submitNewAppointment(e)
     });
 }
 
 
-function submitNewAppointment(e){
-    e.preventDefault();
-
-    let formDataArray = $(e.target).serializeArray();
+function submitNewAppointment(e) {
+  e.preventDefault();
+  //console.log(e.target)
+  let formData= $(e.target).serialize();
+  console.log(formData);
+  
+  let formDataArray = $(e.target).serializeArray();
 
     let formDataObject = {};
     $.each(formDataArray, function(index, item) {
-      formDataObject[item.name] = item.value;
+        formDataObject[item.name] = item.value;
     });
 
-    $('#createForm').remove();
-    console.log(formDataObject);
+  // Make an AJAX request to add the new appointment
+  $.ajax({
+    type: "POST",
+    url: '../Server/serviceHandler.php', // Adjust the URL to your server endpoint
+    data: {
+      method: 'addAppointment',
+      title: formDataObject.title,
+      location: formDataObject.location,
+      date: formDataObject.date,
+      expiration_date: formDataObject.expiration_date
+  },
+    dataType: 'json',
+    success: function(response) {
+        console.log('New appointment added successfully:', response);
+        // Optionally, you can reload the overview to display the updated list of appointments
+        showOverview();
+    },
+    error: function(jqXHR, textStatus, errorThrown) {
+        console.error('AJAX error:', textStatus, ':', errorThrown);
+    }
+});
 
-    // server endpoint to be done
-    /*
-    $.ajax({
-      type: 'POST',
-      url: 'your-server-endpoint.php', 
-      data: formDataObject,
-      success: function(response) {
-        console.log(response);
-      },
-      error: function(jqXHR, textStatus, errorThrown) {
-        console.error('AJAX error: ', textStatus, ' : ', errorThrown);
-      }
-    }); 
-  });
-  */
+  // Remove the form after submission
+  $('#createForm').remove();
 }
  
 function showSingleAppointment(event){

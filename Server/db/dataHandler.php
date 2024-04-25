@@ -33,18 +33,21 @@ class DataHandler
 
     public function addAppointment($title, $location, $date, $expiration_date)
     {
+
         // Generate a unique ID for the new appointment
         $newAppointmentId = count($this->demoAppointments) + 1;
-
+    
+    
         // Create a new Appointment object
         $newAppointment = new Appointment($newAppointmentId, $title, $location, $date, $expiration_date);
-
+    
         // Add the new appointment to the array of appointments
         $this->demoAppointments[] = [$newAppointment];
-
+    
         // Optionally, you can return the ID of the newly added appointment
         return $newAppointmentId;
     }
+
 
     public function queryAllAppointments()
     {
