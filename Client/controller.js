@@ -43,7 +43,7 @@ function loaddata(searchterm) {
         success: function(response) {
             var appointmentList = $('#appointmentList');
             $.each(response, function( index, appointment ) {
-                var appointment = `
+                var appointmentHTML = `
 
                 <div class="row appointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment[0].title}</h4>
