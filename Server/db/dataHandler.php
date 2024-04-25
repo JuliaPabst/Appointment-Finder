@@ -8,7 +8,7 @@ class DataHandler
     {
         $this->demoAppointments = [
             [new Appointment(1, "StudySession", "FH", "03.04.2024", "30.04.2024")],
-            [new Appointment(2, "Workout", "GymBros", "29.04.2025", "30.04.2024")],
+            [new Appointment(1, "Workout", "Gym", "03.04.2024", "30.04.2024")]
         ];
 
         $this->demoTimeSlots = [
@@ -39,13 +39,13 @@ class DataHandler
     
     
         // Create a new Appointment object
-        $newAppointment = new Appointment($newAppointmentId, $title, $location, $date, $expiration_date);
+        $newAppointment = [new Appointment($newAppointmentId, $title, $location, $date, $expiration_date)];
     
         // Add the new appointment to the array of appointments
-        $this->demoAppointments[] = [$newAppointment];
+        $this->demoAppointments[] = $newAppointment;
     
         // Optionally, you can return the ID of the newly added appointment
-        return $newAppointmentId;
+        return $this->demoAppointments;
     }
 
 
