@@ -29,7 +29,6 @@ function loaddata(searchterm) {
             data = response;
         }
     });
-
 }
 
    // load all Data 
@@ -44,8 +43,6 @@ function loaddata(searchterm) {
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
-          
-
             $.each(response, function( index, appointment ) {
                 var expiredText = 'active';
                 if (new Date(appointment[0].expiration_date) < new Date()) {
@@ -53,7 +50,6 @@ function loaddata(searchterm) {
                  }
 
                 var appointmentHTML = `
-
                 <div class="row appointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment[0].title}</h4>
                 <ul>
@@ -109,13 +105,20 @@ function showNewAppointmentForm() {
     let addDateButton = $("<button type='button' id='addOneMoreDateButton'>Add one more appointment option</button>");
     let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
     let submitButton = $("<button type='submit'>Submit</button>");
+    let dismissButton = $("<button id='dismiss-appointment'>Dismiss appointment</button>");
     
-    createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton);
+    createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton, dismissButton);
     $('#createAppointment').append(createContainer);
     
     $('#addOneMoreDateButton').on('click', function(e) {
         e.preventDefault();
         addOneMoreDateInNewAppointmentForm();
+    });
+
+    $('#dismiss-appointment').on('click', function(e) {
+        e.preventDefault();
+        $('#createForm').remove();
+        $("#newAppointment").show();
     });
 }
 
@@ -153,7 +156,6 @@ function submitNewAppointment(e) {
     dataType: 'json',
     success: function(response) {
         console.log('New appointment added successfully:', response);
-        // Optionally, you can reload the overview to display the updated list of appointments
         showOverview();
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -168,13 +170,13 @@ function submitNewAppointment(e) {
  
 function showSingleAppointment(event){
 $("#fullPage").hide();
+let backButton = $('<button id="back">Back</button>')
 let title = $(event.target).text();
-
-let schedule = $('<div class="container mt-3"></div>');
+let schedule = $('<form class="container mt-3"></form>');
 
 let headerRow = $('<div class="row"></div>');
   
-let col = $(`
+let  titleCol = $(`
       <div class="col">
         <div class="card">
           <div class="card-body text-center">
@@ -183,10 +185,11 @@ let col = $(`
         </div>
       </div>
     `);
-headerRow.append(col);
+
+headerRow.append(backButton, titleCol);
 schedule.append(headerRow);
 
-let row = $('<div class="row"></div>');
+let formRow = $('<div class="row"></div>');
     
 let nameColon = $(`
         <div class="col">
@@ -199,21 +202,50 @@ let nameColon = $(`
         </div>
       `);
 
-row.append(nameColon);
+let appointmentColon1 = $(`
+<div class="col">
+        <label for="date1">01-01-20</label>
+        <input class="checkbox" name="date1" type="checkbox" />
+</div>
+`);
+
+let appointmentColon2 = $(`
+<div class="col">
+        <label for="date2">01-01-20</label>
+        <input class="checkbox" name="date2" type="checkbox" />
+</div>
+`);
+
+let appointmentColon3 = $(`
+<div class="col">
+        <label for="date3">01-01-20</label>
+        <input class="checkbox" name="date3" type="checkbox" />
+</div>
+`);
+
+formRow.append(nameColon, appointmentColon1, appointmentColon2, appointmentColon3);
     
-schedule.append(row);
+schedule.append(formRow);
   
 
 let commentSection = $(`
-    <div class="container mt-3">
+    <div class="container mt-3" id="commentSection">
       <h3>Kommentare</h3>
       <textarea class="form-control mb-2" placeholder="Add comment"></textarea>
       <button class="btn btn-secondary">Add comment</button>
     </div>`
 );
 
+let details = $('<div id="details"></div>').append(schedule, commentSection);
 let body = $('body');
-body.append(schedule, commentSection);
+body.append(details);
+
+$('#back').on('click', function(e) {
+    $("#fullPage").show();
+    $("#details").remove();
+});
+
+
 
 
 // get real Data 
