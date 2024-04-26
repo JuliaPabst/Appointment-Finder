@@ -43,16 +43,23 @@ function loaddata(searchterm) {
         success: function(response) {
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
+
+          
+
             $.each(response, function( index, appointment ) {
+                var expiredText = 'active';
+                if (new Date(appointment[0].expiration_date) < new Date()) {
+                expiredText = 'expired';
+                 }
+
                 var appointmentHTML = `
 
                 <div class="row appointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment[0].title}</h4>
                 <ul>
                 <li>Title: ${appointment[0].title}</li>
-                <li>Created at: ${appointment[0].date}</li>
                 <li>Location: ${appointment[0].location}</li>
-                <li>Title ${appointment[0].expiration_date}</li>
+                <li>Expired: ${expiredText}</li>
                 </ul>
                 `;
                 appointmentList.append(appointmentHTML);
@@ -89,25 +96,35 @@ function showTimeslots(appointmentId) {
 
 
 // post new appointment to database 
-function showNewAppointmentForm(){
+function showNewAppointmentForm() {
     console.log("create");
+    $("#newAppointment").hide();
 
     let createContainer = $("<form id='createForm'></form>");
-    let title = $("<div id='create-title'><label for='title' id='create-titleLabel'>Title</label><input name='title' id='create-titleInput'></div>")
-    let location = $("<div id='create-location'><label for='location' id='create-locationLabel'>Location</label><input name='location' id='create-locationInput'></div>")
-    let date = $("<div id='create-date'><label for='date' id='create-dateLabel'>Date</label><input type='date' name='date' id='create-dateInput'></div>")
-    let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date' id='create-expirationDateLabel'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
+    let title = $("<div id='create-title'><label for='title'>Title</label><input name='title' id='create-titleInput'></div>");
+    let location = $("<div id='create-location'><label for='location'>Location</label><input name='location' id='create-locationInput'></div>");
+    let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
+    let duration = $("<div id='create-duration'><label for='duration'>Duration</label><input name='duration' id='create-durationInput' type='number'></div>");
+    let date = $("<div id='create-date'><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
+    let addDateButton = $("<button type='button' id='addOneMoreDateButton'>Add one more appointment option</button>");
+    let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
     let submitButton = $("<button type='submit'>Submit</button>");
-    createContainer.append(title, location, date, expiration_date, submitButton);
+    
+    createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton);
     $('#createAppointment').append(createContainer);
-
-    $("#createForm").on("submit", function (e) {
+    
+    $('#addOneMoreDateButton').on('click', function(e) {
         e.preventDefault();
-        //console.log(e); // Print the event object to the console
-        submitNewAppointment(e)
+        addOneMoreDateInNewAppointmentForm();
     });
 }
 
+
+function addOneMoreDateInNewAppointmentForm() {
+    let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
+    $('#create-date').append(newDate); 
+    console.log("add Date");
+}
 
 function submitNewAppointment(e) {
   e.preventDefault();
@@ -146,6 +163,7 @@ function submitNewAppointment(e) {
 
   // Remove the form after submission
   $('#createForm').remove();
+  $("#newAppointment").show();
 }
  
 function showSingleAppointment(event){
