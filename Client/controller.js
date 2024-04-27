@@ -29,7 +29,6 @@ function loaddata(searchterm) {
             data = response;
         }
     });
-
 }
 
    // load all Data 
@@ -43,16 +42,20 @@ function loaddata(searchterm) {
         success: function(response) {
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
-            $.each(response, function( index, appointment ) {
-                var appointmentHTML = `
 
+            $.each(response, function( index, appointment ) {
+                var expiredText = 'active';
+                if (new Date(appointment[0].expiration_date) < new Date()) {
+                expiredText = 'expired';
+                 }
+
+                var appointmentHTML = `
                 <div class="row appointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment[0].title}</h4>
                 <ul>
                 <li>Title: ${appointment[0].title}</li>
-                <li>Created at: ${appointment[0].date}</li>
                 <li>Location: ${appointment[0].location}</li>
-                <li>Title ${appointment[0].expiration_date}</li>
+                <li>Expired: ${expiredText}</li>
                 </ul>
                 `;
                 appointmentList.append(appointmentHTML);
@@ -89,25 +92,42 @@ function showTimeslots(appointmentId) {
 
 
 // post new appointment to database 
-function showNewAppointmentForm(){
+function showNewAppointmentForm() {
     console.log("create");
+    $("#newAppointment").hide();
 
     let createContainer = $("<form id='createForm'></form>");
-    let title = $("<div id='create-title'><label for='title' id='create-titleLabel'>Title</label><input name='title' id='create-titleInput'></div>")
-    let location = $("<div id='create-location'><label for='location' id='create-locationLabel'>Location</label><input name='location' id='create-locationInput'></div>")
-    let date = $("<div id='create-date'><label for='date' id='create-dateLabel'>Date</label><input type='date' name='date' id='create-dateInput'></div>")
-    let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date' id='create-expirationDateLabel'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
+    let title = $("<div id='create-title'><label for='title'>Title</label><input name='title' id='create-titleInput'></div>");
+    let location = $("<div id='create-location'><label for='location'>Location</label><input name='location' id='create-locationInput'></div>");
+    let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
+    let duration = $("<div id='create-duration'><label for='duration'>Duration</label><input name='duration' id='create-durationInput' type='number'></div>");
+    let date = $("<div id='create-date'><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
+    let addDateButton = $("<button type='button' id='addOneMoreDateButton'>Add one more appointment option</button>");
+    let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
     let submitButton = $("<button type='submit'>Submit</button>");
-    createContainer.append(title, location, date, expiration_date, submitButton);
+    let dismissButton = $("<button id='dismiss-appointment'>Dismiss appointment</button>");
+    
+    createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton, dismissButton);
     $('#createAppointment').append(createContainer);
-
-    $("#createForm").on("submit", function (e) {
+    
+    $('#addOneMoreDateButton').on('click', function(e) {
         e.preventDefault();
-        //console.log(e); // Print the event object to the console
-        submitNewAppointment(e)
+        addOneMoreDateInNewAppointmentForm();
+    });
+
+    $('#dismiss-appointment').on('click', function(e) {
+        e.preventDefault();
+        $('#createForm').remove();
+        $("#newAppointment").show();
     });
 }
 
+
+function addOneMoreDateInNewAppointmentForm() {
+    let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
+    $('#create-date').append(newDate); 
+    console.log("add Date");
+}
 
 function submitNewAppointment(e) {
   e.preventDefault();
@@ -136,7 +156,6 @@ function submitNewAppointment(e) {
     dataType: 'json',
     success: function(response) {
         console.log('New appointment added successfully:', response);
-        // Optionally, you can reload the overview to display the updated list of appointments
         showOverview();
     },
     error: function(jqXHR, textStatus, errorThrown) {
@@ -146,17 +165,18 @@ function submitNewAppointment(e) {
 
   // Remove the form after submission
   $('#createForm').remove();
+  $("#newAppointment").show();
 }
  
 function showSingleAppointment(event){
 $("#fullPage").hide();
+let backButton = $('<button id="back">Back</button>')
 let title = $(event.target).text();
-
-let schedule = $('<div class="container mt-3"></div>');
+let schedule = $('<form class="container mt-3"></form>');
 
 let headerRow = $('<div class="row"></div>');
   
-let col = $(`
+let  titleCol = $(`
       <div class="col">
         <div class="card">
           <div class="card-body text-center">
@@ -165,10 +185,11 @@ let col = $(`
         </div>
       </div>
     `);
-headerRow.append(col);
+
+headerRow.append(backButton, titleCol);
 schedule.append(headerRow);
 
-let row = $('<div class="row"></div>');
+let formRow = $('<div class="row"></div>');
     
 let nameColon = $(`
         <div class="col">
@@ -181,21 +202,50 @@ let nameColon = $(`
         </div>
       `);
 
-row.append(nameColon);
+let appointmentColon1 = $(`
+<div class="col">
+        <label for="date1">01-01-20</label>
+        <input class="checkbox" name="date1" type="checkbox" />
+</div>
+`);
+
+let appointmentColon2 = $(`
+<div class="col">
+        <label for="date2">01-01-20</label>
+        <input class="checkbox" name="date2" type="checkbox" />
+</div>
+`);
+
+let appointmentColon3 = $(`
+<div class="col">
+        <label for="date3">01-01-20</label>
+        <input class="checkbox" name="date3" type="checkbox" />
+</div>
+`);
+
+formRow.append(nameColon, appointmentColon1, appointmentColon2, appointmentColon3);
     
-schedule.append(row);
+schedule.append(formRow);
   
 
 let commentSection = $(`
-    <div class="container mt-3">
+    <div class="container mt-3" id="commentSection">
       <h3>Kommentare</h3>
       <textarea class="form-control mb-2" placeholder="Add comment"></textarea>
       <button class="btn btn-secondary">Add comment</button>
     </div>`
 );
 
+let details = $('<div id="details"></div>').append(schedule, commentSection);
 let body = $('body');
-body.append(schedule, commentSection);
+body.append(details);
+
+$('#back').on('click', function(e) {
+    $("#fullPage").show();
+    $("#details").remove();
+});
+
+
 
 
 // get real Data 
