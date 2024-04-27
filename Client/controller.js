@@ -72,7 +72,7 @@ function loaddata(searchterm) {
     });
 }
 function showTimeslots(appointmentId) {
-    console.log("showTimeslots")
+    //console.log("showTimeslots")
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -80,7 +80,7 @@ function showTimeslots(appointmentId) {
         data: {method: "queryTimeslots", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            //console.log(response);
             var timeslotList = $('#timeslotList');
             $.each(response, function(index, timeslot) {
                 var timeslotHTML = `
@@ -136,14 +136,16 @@ function showNewAppointmentForm() {
 
 
 function addOneMoreDateInNewAppointmentForm() {
+    console.log("addOneMoreDateInNewAppointmentForm");
     let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
     $('#create-date').append(newDate); 
     console.log("add Date");
 }
 
 function submitNewAppointment(e) {
+    console.log("submitNewAppointment");
   e.preventDefault();
-  //console.log(e.target)
+  console.log(e.target)
   let formData= $(e.target).serialize();
   console.log(formData);
   
