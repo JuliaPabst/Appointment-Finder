@@ -1,52 +1,46 @@
 <?php
 include("./models/appointment.php");
-require 'dbaccess.php';
+
 class DataHandler
 {
-    private $demoAppointments;
-    private $demoTimeSlots;
-    public function __construct()
-    {
-        $this->demoAppointments = [
-            [new Appointment(1, "StudySession", "FH", "03.04.2024", "30.04.2024")],
-            [new Appointment(1, "Workout", "Gym", "03.04.2024", "30.04.2024")]
-        ];
+    private $db; // Declare the property without initializing it here
 
-        $this->demoTimeSlots = [
-            [new TimeSlot(1, '2024-04-14', '09:00', '10:00', 1)],
-            [new TimeSlot(2, '2024-04-14', '10:00', '11:00', 1)],
-            [new TimeSlot(3, '2024-04-15', '11:00', '12:00', 2)],
-            [new TimeSlot(4, '2024-04-15', '13:00', '14:00', 2)],
-            [new TimeSlot(5, '2024-04-16', '14:00', '15:00', 2)]
-        ];
+    public function __construct($db)
+    {
+        $this->db = $db; // Initialize the property in the constructor
     }
     public function queryAppointments()
     {
-        $res =  $this->demoAppointments;
-        return $res;
+        $query = "SELECT * FROM appointments";
+        $result = $this->db->query($query);
+        $appointments = array();
+        while ($row = $result->fetch_assoc()) {
+            $appointment = new Appointment($row['id'], $row['title'], $row['location'], $row['date'], $row['expiration_date']);
+            $appointments[] = $appointment;
+        }
+        return $appointments;
     }
 
     public function queryTimeslots()
     {
-        $res =  $this->demoTimeSlots;
-        return $res;
+        $query = "SELECT * FROM timeslots";
+        $result = $this->db->query($query);
+        $timeslots = array();
+        while ($row = $result->fetch_assoc()) {
+            $timeslot = new TimeSlot($row['id'], $row['date'], $row['start_time'], $row['end_time'], $row['fk_appointment_id']);
+            $timeslots[] = $timeslot;
+        }
+        return $timeslots;
     }
 
     public function addAppointment($title, $location, $date, $expiration_date)
     {
 
-        // Generate a unique ID for the new appointment
-        $newAppointmentId = count($this->demoAppointments) + 1;
-    
-    
-        // Create a new Appointment object
-        $newAppointment = [new Appointment($newAppointmentId, $title, $location, $date, $expiration_date)];
-    
-        // Add the new appointment to the array of appointments
-        $this->demoAppointments[] = $newAppointment;
-    
-        // Optionally, you can return the ID of the newly added appointment
-        return $this->demoAppointments;
+        $stmt = $this->db->prepare("INSERT INTO appointments (title, location, date, expiration_date) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $title, $location, $date, $expiration_date);
+        $stmt->execute();
+        $stmt->close();
+        return true; 
     }
 
 
@@ -62,7 +56,7 @@ class DataHandler
     {
         $result = array();
         foreach ($this->queryAppointments() as $val) {
-            if ($val[0]->id == $id) {
+            if ($val->id == $id) {
                 array_push($result, $val);
             }
         }
@@ -73,7 +67,7 @@ class DataHandler
     {
         $result = array();
         foreach ($this->queryAppointments() as $val) {
-            if ($val[0]->title == $title) {
+            if ($val->title == $title) {
                 array_push($result, $val);
             }
         }
@@ -84,7 +78,7 @@ class DataHandler
     {
         $result = array();
         foreach ($this->queryTimeslots() as $val) {
-            if ($val[0]->fk_appointment_id == $fk_appointment_id) {
+            if ($val->fk_appointment_id == $fk_appointment_id) {
                 array_push($result, $val);
             }
         }

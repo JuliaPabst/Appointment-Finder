@@ -1,12 +1,13 @@
 <?php
 include("./db/dataHandler.php");
 
+
 class SimpleLogic
 {
     private $dh;
-    function __construct()
+    function __construct($db_obj)
     {
-        $this->dh = new DataHandler();
+        $this->dh = new DataHandler($db_obj);
     }
 
     function handleRequest($method, $param, $title, $location, $date, $expiration_date)

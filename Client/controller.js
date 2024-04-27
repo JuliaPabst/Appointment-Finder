@@ -1,4 +1,6 @@
 //Starting point for JQuery init
+
+
 let data = undefined;
 
 $(document).ready(function () {
@@ -38,32 +40,37 @@ function loaddata(searchterm) {
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryAllAppointments"},
-        dataType: "json",
+        //dataType: "json",
         success: function(response) {
+            console.log(response);
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
             $.each(response, function( index, appointment ) {
                 var expiredText = 'active';
-                if (new Date(appointment[0].expiration_date) < new Date()) {
+                if (new Date(appointment.expiration_date) < new Date()) {
                 expiredText = 'expired';
                  }
+                 
+                 console.log(appointment);
 
                 var appointmentHTML = `
                 <div class="row appointment">
-                <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment[0].title}</h4>
+                <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
                 <ul>
-                <li>Title: ${appointment[0].title}</li>
-                <li>Location: ${appointment[0].location}</li>
+                <li>Title: ${appointment.title}</li>
+                <li>Location: ${appointment.location}</li>
                 <li>Expired: ${expiredText}</li>
                 </ul>
                 `;
                 appointmentList.append(appointmentHTML);
             });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, ":", errorThrown);
         }
     });
 }
-
 function showTimeslots(appointmentId) {
     $.ajax({
         type: "POST",

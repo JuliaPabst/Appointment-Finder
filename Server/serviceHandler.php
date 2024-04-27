@@ -1,5 +1,14 @@
 <?php
 include("businesslogic/simpleLogic.php");
+require 'db/dbaccess.php';
+
+$db_obj = new mysqli($host, $user, $password, $database);
+
+    if ($db_obj->connect_error) {
+        echo "Connection Error: " . $db_obj->connect_error;
+        exit();
+        }
+
 
 $param = "";
 $method = "";
@@ -15,7 +24,7 @@ isset($_POST["location"]) ? $location = $_POST["location"] : false;
 isset($_POST["date"]) ? $date = $_POST["date"] : false;
 isset($_POST["expiration_date"]) ? $expiration_date = $_POST["expiration_date"] : false;
 
-$logic = new SimpleLogic();
+$logic = new SimpleLogic($db_obj);
 $result = $logic->handleRequest($method, $param, $title, $location, $date, $expiration_date);
 if ($result == null) {
     response("POST", 400, null);
