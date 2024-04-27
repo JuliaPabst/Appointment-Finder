@@ -82,12 +82,12 @@ function showTimeslots(appointmentId) {
             var timeslotList = $('#timeslotList');
             $.each(response, function(index, timeslot) {
                 var timeslotHTML = `
-                    <h4>Timeslot for Appointment ID${timeslot[0].fk_appointment_id}</h4>"
+                    <h4>Timeslot for Appointment ID${timeslot.fk_appointment_id}</h4>"
                     <div class="row timeslot">
                         <ul>
-                            <li>Date: ${timeslot[0].date}</li>
-                            <li>Begin Time: ${timeslot[0].begin_time}</li>
-                            <li>End time: ${timeslot[0].end_time}</li>
+                            <li>Date: ${timeslot.date}</li>
+                            <li>Begin Time: ${timeslot.begin_time}</li>
+                            <li>End time: ${timeslot.end_time}</li>
                         </ul>
                     </div>
                 `;
