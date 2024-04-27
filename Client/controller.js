@@ -40,9 +40,9 @@ function loaddata(searchterm) {
         url: "../Server/serviceHandler.php",
         cache: false,
         data: {method: "queryAllAppointments"},
-        //dataType: "json",
+        dataType: "json",
         success: function(response) {
-            console.log(response);
+            //console.log(response);
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
@@ -52,7 +52,7 @@ function loaddata(searchterm) {
                 expiredText = 'expired';
                  }
                  
-                 console.log(appointment);
+                 //console.log(appointment);
 
                 var appointmentHTML = `
                 <div class="row appointment">
@@ -72,13 +72,15 @@ function loaddata(searchterm) {
     });
 }
 function showTimeslots(appointmentId) {
+    console.log("showTimeslots")
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
         cache: false,
-        data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
+        data: {method: "queryTimeslots", param: appointmentId},
         dataType: "json",
         success: function(response) {
+            console.log(response);
             var timeslotList = $('#timeslotList');
             $.each(response, function(index, timeslot) {
                 var timeslotHTML = `
@@ -93,6 +95,9 @@ function showTimeslots(appointmentId) {
                 `;
                 timeslotList.append(timeslotHTML);
             });
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, ":", errorThrown);
         }
     });
 }

@@ -27,7 +27,7 @@ class DataHandler
         $result = $this->db->query($query);
         $timeslots = array();
         while ($row = $result->fetch_assoc()) {
-            $timeslot = new TimeSlot($row['id'], $row['date'], $row['start_time'], $row['end_time'], $row['fk_appointment_id']);
+            $timeslot = new TimeSlot($row['id'], $row['date'], $row['begin_time'], $row['end_time'], $row['fk_appointment_id']);
             $timeslots[] = $timeslot;
         }
         return $timeslots;
@@ -84,6 +84,7 @@ class DataHandler
         }
         return $result;
     }
+    
 
     
 }
