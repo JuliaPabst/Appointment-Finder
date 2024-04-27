@@ -4,9 +4,10 @@
     $password = "topSecretPassword123";
     $database = "appointment_finder";
 
-    $conn = new mysqli($host, $user, $password, $database);
+    $db_obj = new mysqli($host, $user, $password, $database);
 
-    if($conn->connect_error) {
-        die('Database error:' . $conn->connect_error);
-    }
-?>
+    if ($db_obj->connect_error) {
+        echo "Connection Error: " . $db_obj->connect_error;
+        exit();
+        }
+
