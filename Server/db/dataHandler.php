@@ -1,5 +1,6 @@
 <?php
 include("./models/appointment.php");
+require 'dbaccess.php';
 class DataHandler
 {
     private $demoAppointments;
