@@ -51,8 +51,6 @@ function loaddata(searchterm) {
                 expiredText = 'expired';
                  }
                  
-                 //console.log(appointment);
-
                 var appointmentHTML = `
                 <div class="row appointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
@@ -113,9 +111,9 @@ function showNewAppointmentForm() {
     let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
     let duration = $("<div id='create-duration'><label for='duration'>Duration</label><input name='duration' id='create-durationInput' type='number'></div>");
     let date = $("<div id='create-date'><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
-    let addDateButton = $("<button type='button' id='addOneMoreDateButton'>Add one more appointment option</button>");
+    let addDateButton = $("<button type='submit' id='addOneMoreDateButton'>Add one more appointment option</button>");
     let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
-    let submitButton = $("<button type='submit'>Submit</button>");
+    let submitButton = $("<button type='submit' id='submitNewAppointment'>Submit</button>");
     let dismissButton = $("<button id='dismiss-appointment'>Dismiss appointment</button>");
     
     createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton, dismissButton);
@@ -131,8 +129,12 @@ function showNewAppointmentForm() {
         $('#createForm').remove();
         $("#newAppointment").show();
     });
-}
 
+    $('#createForm').on('submit', function(e) {
+        e.preventDefault();
+        submitNewAppointment(e);
+    });
+}
 
 function addOneMoreDateInNewAppointmentForm() {
     console.log("addOneMoreDateInNewAppointmentForm");
@@ -143,37 +145,35 @@ function addOneMoreDateInNewAppointmentForm() {
 
 function submitNewAppointment(e) {
     console.log("submitNewAppointment");
-  e.preventDefault();
-  console.log(e.target)
-  let formData= $(e.target).serialize();
-  console.log(formData);
+    e.preventDefault();
+    let formData= $(e.target).serialize();
   
-  let formDataArray = $(e.target).serializeArray();
+    let formDataArray = $(e.target).serializeArray();
 
     let formDataObject = {};
     $.each(formDataArray, function(index, item) {
         formDataObject[item.name] = item.value;
     });
-
-  // Make an AJAX request to add the new appointment
-  $.ajax({
-    type: "POST",
-    url: '../Server/serviceHandler.php', // Adjust the URL to your server endpoint
-    data: {
-      method: 'addAppointment',
-      title: formDataObject.title,
-      location: formDataObject.location,
-      date: formDataObject.date,
-      expiration_date: formDataObject.expiration_date
-  },
-    dataType: 'json',
-    success: function(response) {
-        console.log('New appointment added successfully:', response);
-        showOverview();
-    },
-    error: function(jqXHR, textStatus, errorThrown) {
-        console.error('AJAX error:', textStatus, ':', errorThrown);
-    }
+    console.log(formDataObject);
+    // Make an AJAX request to add the new appointment
+    $.ajax({
+        type: "POST",
+        url: '../Server/serviceHandler.php',
+        data: {
+        method: 'addAppointment', 
+        title: formDataObject.title,
+        location: formDataObject.location,
+        date: formDataObject.date,
+        expiration_date: formDataObject.expiration_date
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('New appointment added successfully:', response);
+            showOverview();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX error:', textStatus, ':', errorThrown);
+        }
 });
 
   // Remove the form after submission

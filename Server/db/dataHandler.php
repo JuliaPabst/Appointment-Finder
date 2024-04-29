@@ -35,7 +35,6 @@ class DataHandler
 
     public function addAppointment($title, $location, $date, $expiration_date)
     {
-
         $stmt = $this->db->prepare("INSERT INTO appointments (title, location, date, expiration_date) VALUES (?, ?, ?, ?)");
         $stmt->bind_param("ssss", $title, $location, $date, $expiration_date);
         $stmt->execute();
