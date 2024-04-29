@@ -15,26 +15,9 @@ $(document).ready(function () {
 
 
     showOverview();
-    showTimeslots(1);
 });
 
-function loaddata(searchterm) {
-    $.ajax({
-        type: "POST",
-        url: "../Server/serviceHandler.php",
-        cache: false,
-        data: {method: "queryAppointmentByTitle", param: searchterm},
-        dataType: "json",
-        success: function (response) {
-            $("#noOfentries").val(response.length);
-            $("#searchResult").show(1000).delay(1000).hide(1000);
-            data = response;
-        }
-    });
-}
-
-   // load all Data 
-   function showOverview() {
+function showOverview() {
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -68,36 +51,8 @@ function loaddata(searchterm) {
         }
     });
 }
-function showTimeslots(appointmentId) {
-    //console.log("showTimeslots")
-    $.ajax({
-        type: "POST",
-        url: "../Server/serviceHandler.php",
-        cache: false,
-        data: {method: "queryTimeslots", param: appointmentId},
-        dataType: "json",
-        success: function(response) {
-            //console.log(response);
-            var timeslotList = $('#timeslotList');
-            $.each(response, function(index, timeslot) {
-                var timeslotHTML = `
-                    <h4>Timeslot for Appointment ID${timeslot.fk_appointment_id}</h4>"
-                    <div class="row timeslot">
-                        <ul>
-                            <li>Date: ${timeslot.date}</li>
-                            <li>Begin Time: ${timeslot.begin_time}</li>
-                            <li>End time: ${timeslot.end_time}</li>
-                        </ul>
-                    </div>
-                `;
-                timeslotList.append(timeslotHTML);
-            });
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error("AJAX error:", textStatus, ":", errorThrown);
-        }
-    });
-}
+
+
 
 
 // post new appointment to database 
@@ -140,13 +95,12 @@ function addOneMoreDateInNewAppointmentForm() {
     console.log("addOneMoreDateInNewAppointmentForm");
     let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
     $('#create-date').append(newDate); 
-    console.log("add Date");
+    //console.log("add Date");
 }
 
 function submitNewAppointment(e) {
-    console.log("submitNewAppointment");
+    //console.log("submitNewAppointment");
     e.preventDefault();
-    let formData= $(e.target).serialize();
   
     let formDataArray = $(e.target).serializeArray();
 
@@ -154,7 +108,8 @@ function submitNewAppointment(e) {
     $.each(formDataArray, function(index, item) {
         formDataObject[item.name] = item.value;
     });
-    console.log(formDataObject);
+    
+    //console.log(formDataObject);
     // Make an AJAX request to add the new appointment
     $.ajax({
         type: "POST",
@@ -180,106 +135,126 @@ function submitNewAppointment(e) {
   $('#createForm').remove();
   $("#newAppointment").show();
 }
+
+function showTimeslots(appointmentId) {
+    console.log("showTimeslots")
+    $.ajax({
+        type: "POST",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "queryTimeslots", param: appointmentId},
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+            response.forEach((timeslot,index) => {
+                var timeslotHTML = `
+                <div class="col">
+                <div>
+                    <div class="informationSingleTimeSlot">
+                        <label for="${timeslot.id}">Date: ${timeslot.date}</label>
+                    </div>
+                    <div>
+                        <label for="beginTime">Begin Time: ${timeslot.begin_time}</label>
+                    </div>
+                     <div>
+                        <label for="endTime">End Time: ${timeslot.end_time}</label>
+                    </div>
+                </div>
+                    <div>
+                        <input class="checkbox" name="${timeslot.id}" type="checkbox" />
+                    </div>    
+                </div>
+                `;
+
+                $("#formRow").append(timeslotHTML)});
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, ":", errorThrown);
+        }
+    });
+}
+
+function getAppointmentId(title){
+    $.ajax({
+        type: "POST",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "queryAppointmentByTitle", param: title},
+        dataType: "json",
+        success: function (response) {
+            //console.log(response);
+            return response[0].id;
+        }
+    });
+}
  
 function showSingleAppointment(event){
-$("#fullPage").hide();
-let backButton = $('<button id="back">Back</button>')
-let title = $(event.target).text();
-let schedule = $('<form class="container mt-3"></form>');
-
-let headerRow = $('<div class="row"></div>');
-  
-let  titleCol = $(`
-      <div class="col">
-        <div class="card">
-          <div class="card-body text-center">
-            <h5 class="card-title">` + title + `</h5>
-          </div>
-        </div>
-      </div>
-    `);
-
-headerRow.append(backButton, titleCol);
-schedule.append(headerRow);
-
-let formRow = $('<div class="row"></div>');
+    $("#fullPage").hide();
+    let title = $(event.target).text();
     
-let nameColon = $(`
-        <div class="col">
-          <div class="card mb-3">
-            <div class="card-body">
-              <input class="form-control mb-2" placeholder="Dein Name" />
-              <button class="btn btn-primary">Buchen</button>
+    let schedule = $('<form class="container mt-3" id="schedule"></form>');
+    $('#container').append(schedule);
+
+    let titleRow = $(`
+        <div class="row" id="titleRow">
+            <h3 class="card-title">` + title + `</h3>
+        </div>`
+    );
+
+    let backButton = $('<button id="back">Back</button>')
+    let formRow = $('<div class="row" id="formRow"></div>');
+    let nameColon = $(`
+            <div class="col">
+            <div class="card mb-3">
+                <div class="card-body">
+                <input class="form-control mb-2" placeholder="Your name" name="name" />
+                <button class="btn btn-primary" button="submit">Book</button>
+                </div>
             </div>
-          </div>
-        </div>
-      `);
-
-let appointmentColon1 = $(`
-<div class="col">
-        <label for="date1">01-01-20</label>
-        <input class="checkbox" name="date1" type="checkbox" />
-</div>
-`);
-
-let appointmentColon2 = $(`
-<div class="col">
-        <label for="date2">01-01-20</label>
-        <input class="checkbox" name="date2" type="checkbox" />
-</div>
-`);
-
-let appointmentColon3 = $(`
-<div class="col">
-        <label for="date3">01-01-20</label>
-        <input class="checkbox" name="date3" type="checkbox" />
-</div>
-`);
-
-formRow.append(nameColon, appointmentColon1, appointmentColon2, appointmentColon3);
+            </div>
+    `);
     
-schedule.append(formRow);
-  
+    formRow.append(nameColon);
+    schedule.append(backButton, titleRow, formRow);
+    
+    getAppointmentId(title);
+    showTimeslots(getAppointmentId(title)); 
 
-let commentSection = $(`
-    <div class="container mt-3" id="commentSection">
-      <h3>Kommentare</h3>
-      <textarea class="form-control mb-2" placeholder="Add comment"></textarea>
-      <button class="btn btn-secondary">Add comment</button>
-    </div>`
-);
+    let commentSection = $(`
+        <div class="container mt-3" id="commentSection">
+        <h3>Comments</h3>
+            <div>Placeholder for comment</div>
+            <textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>
+            <button class="btn btn-secondary">Add comment</button>
+        </div>`
+    );
 
-let details = $('<div id="details"></div>').append(schedule, commentSection);
-let body = $('body');
-body.append(details);
+    let details = $('<div id="details"></div>').append(schedule, commentSection);
+    let body = $('body');
+    body.append(details);
 
-$('#back').on('click', function(e) {
-    $("#fullPage").show();
-    $("#details").remove();
-});
+    $('#back').on('click', function(e) {
+        $("#fullPage").show();
+        $("#details").remove();
+    });
 
+    $('#schedule').on('submit', function(e){
+        e.preventDefault();
+        submitAppointmentBooking(e);
+        $("#fullPage").show();
+        $("#details").remove();
+    })
+}
 
+function submitAppointmentBooking(e){
+    let formDataArray = $(e.target).serializeArray();
 
+    let formDataObject = {};
+    $.each(formDataArray, function(index, item) {
+        formDataObject[item.name] = item.value;
+    });
+    
 
-// get real Data 
-/*$.ajax({
-    type: "GET",
-    url: "../Server/serviceHandler.php",
-    cache: false,
-    data: {
-        method: "queryAppointmentByTitle",
-        title: title  // Titel als Parameter übergeben
-    },
-    dataType: "json",
-    success: function(response) {
-        console.log("Erfolg: ", response);
-        Do things with data
-    },
-    error: function(xhr, status, error) {
-        console.error("Fehler beim AJAX-Call: ", error);
-    }
-});
-*/
-
+    console.log(formDataObject);
 }
 
