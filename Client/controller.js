@@ -38,11 +38,10 @@ function loaddata(searchterm) {
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
-        cache: false,
-        data: {method: "queryAllAppointments"},
+        data: { method: "queryAppointments"},
         dataType: "json",
-        success: function(response) {
-            //console.log(response);
+        success: function (response) {
+            console.log(response);
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
