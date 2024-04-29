@@ -1,0 +1,43 @@
+body {
+    background-color: rgb(47, 47, 47);
+    color: white;
+}
+
+h1{
+    text-align: center;
+    color: rgb(11, 179, 250);
+    padding: 30px;
+}
+
+button {
+    background-color:  rgb(11, 179, 250);
+    color: white;
+    margin: 20px;
+    padding: 5px;
+    border: none;
+}
+
+form{
+    padding: 20px;
+}
+
+label{
+    padding-bottom: 10px;
+    padding-right: 10px;
+}
+
+.singleAppointment{
+    color: rgb(11, 179, 250);
+}
+
+.rowAppointment{
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    padding: 30px;
+}
+
+#appointments{
+    text-align: center;
+}
+

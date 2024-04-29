@@ -35,13 +35,11 @@ function showOverview() {
                  }
                  
                 var appointmentHTML = `
-                <div class="row appointment">
+                <div class="row rowAppointment">
                 <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
-                <ul>
-                <li>Title: ${appointment.title}</li>
-                <li>Location: ${appointment.location}</li>
-                <li>Expired: ${expiredText}</li>
-                </ul>
+                <div>Title: ${appointment.title}</div>
+                <div>Location: ${appointment.location}</div>
+                <div>Expiration status: ${expiredText}</div>
                 `;
                 appointmentList.append(appointmentHTML);
             });
@@ -65,13 +63,17 @@ function showNewAppointmentForm() {
     let location = $("<div id='create-location'><label for='location'>Location</label><input name='location' id='create-locationInput'></div>");
     let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
     let duration = $("<div id='create-duration'><label for='duration'>Duration</label><input name='duration' id='create-durationInput' type='number'></div>");
+    let oneAppointment = $("<div id='oneAppointment'></div>")
     let date = $("<div id='create-date'><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
+    let startTime = $("<div id='create-startTime'><label for='startTime'>Start time </label><input type='time' name='startTime' class='startTimeInput'></div>");
+    let endTime = $("<div id='create-endTime'><label for='endTime'>End time </label><input type='time' name='endTime' class='endTimeInput'></div>");
     let addDateButton = $("<button type='submit' id='addOneMoreDateButton'>Add one more appointment option</button>");
     let expiration_date = $("<div id='create-expirationDate'><label for='expiration_date'>Expiration Date</label><input type='date' name='expiration_date' id='create-expirationDateInput'></div>");
     let submitButton = $("<button type='submit' id='submitNewAppointment'>Submit</button>");
     let dismissButton = $("<button id='dismiss-appointment'>Dismiss appointment</button>");
     
-    createContainer.append(title, location, description, duration, date, addDateButton, expiration_date, submitButton, dismissButton);
+    oneAppointment.append(date, startTime, endTime)
+    createContainer.append(title, location, description, duration, oneAppointment, addDateButton, expiration_date, submitButton, dismissButton);
     $('#createAppointment').append(createContainer);
     
     $('#addOneMoreDateButton').on('click', function(e) {
@@ -93,8 +95,11 @@ function showNewAppointmentForm() {
 
 function addOneMoreDateInNewAppointmentForm() {
     console.log("addOneMoreDateInNewAppointmentForm");
+    let headline = $("<hr/>")
     let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
-    $('#create-date').append(newDate); 
+    let startTime = $("<div id='create-startTime'><label for='startTime'>Start time </label><input type='time' name='startTime' class='startTimeInput'></div>");
+    let endTime = $("<div id='create-endTime'><label for='endTime'>End time </label><input type='time' name='endTime' class='endTimeInput'></div>");
+    $('#oneAppointment').append(headline, newDate, startTime, endTime); 
     //console.log("add Date");
 }
 
@@ -208,7 +213,7 @@ function showSingleAppointment(event){
             <div class="card mb-3">
                 <div class="card-body">
                 <input class="form-control mb-2" placeholder="Your name" name="name" />
-                <button class="btn btn-primary" button="submit">Book</button>
+                <button type="submit">Book</button>
                 </div>
             </div>
             </div>
@@ -225,7 +230,7 @@ function showSingleAppointment(event){
         <h3>Comments</h3>
             <div>Placeholder for comment</div>
             <textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>
-            <button class="btn btn-secondary">Add comment</button>
+            <button>Add comment</button>
         </div>`
     );
 
