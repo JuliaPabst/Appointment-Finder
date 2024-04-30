@@ -314,6 +314,8 @@ function submitAppointmentBooking(e){
         formDataObject[item.name] = item.value;
     });
 
+    console.log(formDataObject);
+
     let userData = {
         username: formDataObject.name,
         comment: formDataObject.comment
@@ -324,7 +326,7 @@ function submitAppointmentBooking(e){
         url: '../Server/serviceHandler.php',
         data: {
         method: 'submitNewVoting', 
-        userData: JSON.stringify(userData),
+        userData: JSON.stringify(formDataObject),
         },
         dataType: 'json',
         success: function(response) {
