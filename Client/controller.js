@@ -170,7 +170,7 @@ function submitNewVoting()
         username: "TestUsername",
         comment: "TestComment"
     };
-    
+
     $.ajax({
         type: "POST",
         url: '../Server/serviceHandler.php',
@@ -180,7 +180,7 @@ function submitNewVoting()
         },
         dataType: 'json',
         success: function(response) {
-            console.log('Voting succesful:', response);
+            console.log('Voting succesful: userid', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
