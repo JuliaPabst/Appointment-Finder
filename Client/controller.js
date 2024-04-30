@@ -132,7 +132,7 @@ function submitNewAppointment(e) {
         expiration_date: $('#create-expirationDateInput').val()
     };
 
-    console.log(formData);
+    //console.log(formData);
     
     //console.log(formDataObject);
     // Make an AJAX request to add the new appointment
@@ -209,6 +209,32 @@ function getAppointmentId(title){
         }
     });
 }
+
+function showComments(id){
+    // ajax call to show all comments related to an appointment with the usernames and the comment
+    
+    console.log($('#comments'));
+
+    let singleComment = $('<div class="singleComment"></div>');
+    let userName = $('<div class="userName">Username Placeholder</div>')
+    let comment = $('<div class="comment">Comment Placeholder</div>')
+    singleComment.append(userName, comment);
+    $('#comments').append(singleComment);
+
+    
+    /*
+    $.ajax({
+        type: "POST",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "queryCommentsByAppointmentId", param: id},
+        dataType: "json",
+        success: function (response) {
+            
+        }
+    });
+*/
+}
  
 function showSingleAppointment(event){
     $("#fullPage").hide();
@@ -235,23 +261,24 @@ function showSingleAppointment(event){
             </div>
             </div>
     `);
-    
-    formRow.append(nameColon);
-    schedule.append(backButton, titleRow, formRow);
-    
-    getAppointmentId(title);
-    showTimeslots(getAppointmentId(title)); 
 
     let commentSection = $(`
         <div class="container mt-3" id="commentSection">
         <h3>Comments</h3>
-            <div>Placeholder for comment</div>
+            <div id="comments"></div>
             <textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>
-            <button>Add comment</button>
         </div>`
     );
+    
+    formRow.append(nameColon);
+    schedule.append(backButton, titleRow, formRow, commentSection);
+    
+    let appointmentId = getAppointmentId(title);
+    getAppointmentId(title);
+    showTimeslots(appointmentId); 
+    showComments(appointmentId);
 
-    let details = $('<div id="details"></div>').append(schedule, commentSection);
+    let details = $('<div id="details"></div>').append(schedule);
     let body = $('body');
     body.append(details);
 
@@ -275,8 +302,7 @@ function submitAppointmentBooking(e){
     $.each(formDataArray, function(index, item) {
         formDataObject[item.name] = item.value;
     });
-    
 
-    //console.log(formDataObject);
+    console.log(formDataObject);
 }
 
