@@ -38,6 +38,7 @@ function showOverview() {
                 <div class="row rowAppointment">
                     <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
                     <div>Title: ${appointment.title}</div>
+                    <div>Description: ${appointment.description}</div>
                     <div>Location: ${appointment.location}</div>
                     <div>Expiration status: ${expiredText}</div>
                 </div>

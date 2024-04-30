@@ -15,7 +15,7 @@ class DataHandler
         $result = $this->db->query($query);
         $appointments = array();
         while ($row = $result->fetch_assoc()) {
-            $appointment = new Appointment($row['id'], $row['title'], $row['location'], $row['expiration_date']);
+            $appointment = new Appointment($row['id'], $row['title'], $row['description'], $row['location'], $row['expiration_date']);
             $appointments[] = $appointment;
         }
         return $appointments;
@@ -39,9 +39,10 @@ class DataHandler
         $title = $data["title"];
         $location = $data["location"];
         $expiration_date = $data["expiration_date"];
+        $description = $data["description"];
 
-        $stmt = $this->db->prepare("INSERT INTO appointments (title, location, expiration_date) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $title, $location, $expiration_date);
+        $stmt = $this->db->prepare("INSERT INTO appointments (title, location, expiration_date, description) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("ssss", $title, $location, $expiration_date, $description);
         $stmt->execute();
         $stmt->close();
         return true; 
