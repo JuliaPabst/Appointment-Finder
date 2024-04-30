@@ -4,13 +4,15 @@ class Appointment {
     public $title;
     public $description;
     public $location;
+    public $duration;
     public $expiration_date;
 
-    function __construct($id, $title, $description, $location, $expiration_date) {
+    function __construct($id, $title, $description, $location, $duration, $expiration_date) {
         $this->id = $id;
         $this->title = $title;
         $this->description = $description;
         $this->location=$location;
+        $this->duration=$duration;
         $this->expiration_date=$expiration_date;
 
       }
