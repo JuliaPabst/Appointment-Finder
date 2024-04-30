@@ -144,7 +144,7 @@ function submitNewAppointment(e) {
         },
         dataType: 'json',
         success: function(response) {
-            //console.log('New appointment added successfully:', response);
+            console.log('New appointment added successfully:', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {

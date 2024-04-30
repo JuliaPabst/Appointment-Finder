@@ -44,9 +44,12 @@ class DataHandler
 
         $stmt = $this->db->prepare("INSERT INTO appointments (title, location, duration, expiration_date, description) VALUES (?, ?, ?, ?, ?)");
         $stmt->bind_param("sssss", $title, $location, $duration, $expiration_date, $description);
+
         $stmt->execute();
+        // Get ID of last inserted record
+        $appointment_id = $this->db->insert_id;
         $stmt->close();
-        return true; 
+        return $appointment_id; 
     }
 
 
