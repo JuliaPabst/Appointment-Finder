@@ -164,30 +164,6 @@ function submitNewAppointment(e) {
   $("#newAppointment").show();
 }
 
-function submitNewVoting()
-{
-    let userData = {
-        username: "TestUsername",
-        comment: "TestComment"
-    };
-
-    $.ajax({
-        type: "POST",
-        url: '../Server/serviceHandler.php',
-        data: {
-        method: 'submitNewVoting', 
-        userData: JSON.stringify(userData),
-        },
-        dataType: 'json',
-        success: function(response) {
-            console.log('Voting succesful: userid', response);
-            showOverview();
-        },
-        error: function(jqXHR, textStatus, errorThrown) {
-            console.error('AJAX error:', textStatus, ':', errorThrown);
-        }
-});
-}
 
 function showTimeslots(appointmentId) {
     // console.log("showTimeslots")
@@ -333,6 +309,28 @@ function submitAppointmentBooking(e){
     $.each(formDataArray, function(index, item) {
         formDataObject[item.name] = item.value;
     });
+
+    let userData = {
+        username: formDataObject.name,
+        comment: formDataObject.comment
+    };
+
+    $.ajax({
+        type: "POST",
+        url: '../Server/serviceHandler.php',
+        data: {
+        method: 'submitNewVoting', 
+        userData: JSON.stringify(userData),
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Voting succesful: userid', response);
+            showOverview();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX error:', textStatus, ':', errorThrown);
+        }
+});
 
     console.log(formDataObject);
 }
