@@ -65,6 +65,25 @@ class DataHandler
         }
     }
 
+    public function addUser($userData)
+    {
+        $data = json_decode($userData, true);
+        $username = $data['username'];
+        $comment = $data['comment'];
+        $stmt = $this->db->prepare("INSERT INTO users (username, comment) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $comment);
+        $stmt->execute();
+        // Get ID of last inserted record
+        $user_id = $this->db->insert_id;
+        $stmt->close();
+        return $user_id; 
+    }
+
+    public function submitNewVoting($userData)
+    {
+        $user_id = $this->addUser($userData);
+        return $user_id;
+    }
 
     public function queryAllAppointments()
     {

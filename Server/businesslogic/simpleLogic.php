@@ -10,7 +10,7 @@ class SimpleLogic
         $this->dh = new DataHandler($db_obj);
     }
 
-    function handleRequest($method, $param, $appointmentData)
+    function handleRequest($method, $param, $appointmentData, $userData)
     {
         switch ($method) {
             case "queryAppointments":
@@ -33,6 +33,9 @@ class SimpleLogic
                 break;
             case "addAppointment":
                 $res = $this->dh->addAppointment($appointmentData);
+                break;
+            case "submitNewVoting":
+                $res = $this->dh->submitNewVoting($userData);
                 break;
             default:
                 $res = null;

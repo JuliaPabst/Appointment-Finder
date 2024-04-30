@@ -15,6 +15,9 @@ $(document).ready(function () {
 
 
     showOverview();
+
+    
+    submitNewVoting();
 });
 
 function showOverview() {
@@ -124,6 +127,8 @@ function submitNewAppointment(e) {
         });
     });
 
+    
+
     let formData = {
         title: $('#create-titleInput').val(),
         location: $('#create-locationInput').val(),
@@ -157,6 +162,31 @@ function submitNewAppointment(e) {
   // Remove the form after submission
   $('#createForm').remove();
   $("#newAppointment").show();
+}
+
+function submitNewVoting()
+{
+    let userData = {
+        username: "TestUsername",
+        comment: "TestComment"
+    };
+    
+    $.ajax({
+        type: "POST",
+        url: '../Server/serviceHandler.php',
+        data: {
+        method: 'submitNewVoting', 
+        userData: JSON.stringify(userData),
+        },
+        dataType: 'json',
+        success: function(response) {
+            console.log('Voting succesful:', response);
+            showOverview();
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error('AJAX error:', textStatus, ':', errorThrown);
+        }
+});
 }
 
 function showTimeslots(appointmentId) {
