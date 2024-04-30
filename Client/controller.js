@@ -305,4 +305,3 @@ function submitAppointmentBooking(e){
 
     console.log(formDataObject);
 }
-

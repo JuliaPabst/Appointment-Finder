@@ -32,7 +32,7 @@ class SimpleLogic
                 $res = $this->dh->queryTimeslotsByAppointmentId($param);
                 break;
             case "addAppointment":
-                $res = $this->dh->addAppointment($title, $location, $date, $expiration_date);
+                $res = $this->dh->addAppointment($title, $location, $expiration_date);
                 break;
             default:
                 $res = null;
