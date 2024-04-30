@@ -282,7 +282,6 @@ function showSingleAppointment(event){
     schedule.append(backButton, titleRow, formRow, commentSection);
     
     let appointmentId = getAppointmentId(title);
-    getAppointmentId(title);
     showTimeslots(appointmentId); 
     showComments(appointmentId);
 
