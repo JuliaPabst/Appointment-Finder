@@ -24,7 +24,7 @@ function showOverview() {
         data: { method: "queryAppointments"},
         dataType: "json",
         success: function (response) {
-            console.log(response);
+            //console.log(response);
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
@@ -36,10 +36,11 @@ function showOverview() {
                  
                 var appointmentHTML = `
                 <div class="row rowAppointment">
-                <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
-                <div>Title: ${appointment.title}</div>
-                <div>Location: ${appointment.location}</div>
-                <div>Expiration status: ${expiredText}</div>
+                    <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
+                    <div>Title: ${appointment.title}</div>
+                    <div>Location: ${appointment.location}</div>
+                    <div>Expiration status: ${expiredText}</div>
+                </div>
                 `;
                 appointmentList.append(appointmentHTML);
             });
@@ -52,10 +53,8 @@ function showOverview() {
 
 
 
-
 // post new appointment to database 
 function showNewAppointmentForm() {
-    console.log("create");
     $("#newAppointment").hide();
 
     let createContainer = $("<form id='createForm'></form>");
@@ -63,7 +62,8 @@ function showNewAppointmentForm() {
     let location = $("<div id='create-location'><label for='location'>Location</label><input name='location' id='create-locationInput'></div>");
     let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
     let duration = $("<div id='create-duration'><label for='duration'>Duration</label><input name='duration' id='create-durationInput' type='number'></div>");
-    let oneAppointment = $("<div id='oneAppointment'></div>")
+    let allAppointments = $("<div id='allAppointments'></div>");
+    let oneAppointment = $("<div class='oneAppointmentContainer'></div>")
     let date = $("<div id='create-date'><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
     let startTime = $("<div id='create-startTime'><label for='startTime'>Start time </label><input type='time' name='startTime' class='startTimeInput'></div>");
     let endTime = $("<div id='create-endTime'><label for='endTime'>End time </label><input type='time' name='endTime' class='endTimeInput'></div>");
@@ -73,7 +73,8 @@ function showNewAppointmentForm() {
     let dismissButton = $("<button id='dismiss-appointment'>Dismiss appointment</button>");
     
     oneAppointment.append(date, startTime, endTime)
-    createContainer.append(title, location, description, duration, oneAppointment, addDateButton, expiration_date, submitButton, dismissButton);
+    allAppointments.append(oneAppointment);
+    createContainer.append(title, location, description, duration, allAppointments, addDateButton, expiration_date, submitButton, dismissButton);
     $('#createAppointment').append(createContainer);
     
     $('#addOneMoreDateButton').on('click', function(e) {
@@ -94,25 +95,44 @@ function showNewAppointmentForm() {
 }
 
 function addOneMoreDateInNewAppointmentForm() {
-    console.log("addOneMoreDateInNewAppointmentForm");
-    let headline = $("<hr/>")
-    let newDate = $("<div><label for='date'>Appointment Option </label><input type='date' name='date' class='dateInput'></div>");
-    let startTime = $("<div id='create-startTime'><label for='startTime'>Start time </label><input type='time' name='startTime' class='startTimeInput'></div>");
-    let endTime = $("<div id='create-endTime'><label for='endTime'>End time </label><input type='time' name='endTime' class='endTimeInput'></div>");
-    $('#oneAppointment').append(headline, newDate, startTime, endTime); 
-    //console.log("add Date");
+    let index = $('.oneAppointmentContainer').length;  
+    let separation =$('<hr/>');
+    let container = $("<div class='oneAppointmentContainer'></div>");
+    let newDate = $(`<div><label for='date${index}'>Appointment Date:</label><input type='date' name='date${index}' class='dateInput'></div>`);
+    let startTime = $(`<div><label for='startTime${index}'>Start Time:</label><input type='time' name='startTime${index}' class='startTimeInput'></div>`);
+    let endTime = $(`<div><label for='endTime${index}'>End Time:</label><input type='time' name='endTime${index}' class='endTimeInput'></div>`);
+    container.append(newDate, startTime, endTime);
+    $('#allAppointments').append(separation, container);
 }
 
 function submitNewAppointment(e) {
     //console.log("submitNewAppointment");
     e.preventDefault();
   
-    let formDataArray = $(e.target).serializeArray();
-
-    let formDataObject = {};
-    $.each(formDataArray, function(index, item) {
-        formDataObject[item.name] = item.value;
+    let appointmentDates = [];
+    console.log($('.oneAppointmentContainer'));
+    $('.oneAppointmentContainer').each(function() {
+        console.log("an Element in the oneAppointmentContainerArray");
+        let date = $(this).find('.dateInput').val();
+        let startTime = $(this).find('.startTimeInput').val();
+        let endTime = $(this).find('.endTimeInput').val();
+        appointmentDates.push({
+            date: date,
+            startTime: startTime,
+            endTime: endTime
+        });
     });
+
+    let formData = {
+        title: $('#create-titleInput').val(),
+        location: $('#create-locationInput').val(),
+        description: $('#create-description .description').val(),
+        duration: $('#create-durationInput').val(),
+        dates: appointmentDates,
+        expiration_date: $('#create-expirationDateInput').val()
+    };
+
+    console.log(formData);
     
     //console.log(formDataObject);
     // Make an AJAX request to add the new appointment
@@ -121,14 +141,11 @@ function submitNewAppointment(e) {
         url: '../Server/serviceHandler.php',
         data: {
         method: 'addAppointment', 
-        title: formDataObject.title,
-        location: formDataObject.location,
-        date: formDataObject.date,
-        expiration_date: formDataObject.expiration_date
+        appointmentData: JSON.stringify(formData)
         },
         dataType: 'json',
         success: function(response) {
-            console.log('New appointment added successfully:', response);
+            //console.log('New appointment added successfully:', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -142,7 +159,7 @@ function submitNewAppointment(e) {
 }
 
 function showTimeslots(appointmentId) {
-    console.log("showTimeslots")
+    // console.log("showTimeslots")
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -150,7 +167,7 @@ function showTimeslots(appointmentId) {
         data: {method: "queryTimeslots", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            // console.log(response);
             response.forEach((timeslot,index) => {
                 var timeslotHTML = `
                 <div class="col">
@@ -260,6 +277,6 @@ function submitAppointmentBooking(e){
     });
     
 
-    console.log(formDataObject);
+    //console.log(formDataObject);
 }
 
