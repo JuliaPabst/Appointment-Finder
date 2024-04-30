@@ -41,3 +41,10 @@ label{
     text-align: center;
 }
 
+.userName{
+    font-weight: 700;
+}
+
+.singleComment{
+    padding-bottom: 30px;
+}
