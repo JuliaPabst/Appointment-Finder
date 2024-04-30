@@ -38,7 +38,7 @@ function showOverview() {
                  
                 var appointmentHTML = `
                 <div class="row rowAppointment">
-                    <h4 class="singleAppointment" onClick="showSingleAppointment(event)">${appointment.title}</h4>
+                    <h4 class="singleAppointment" onClick="showSingleAppointment(event, '${expiredText}')">${appointment.title}</h4>
                     <div>Title: ${appointment.title}</div>
                     <div>Description: ${appointment.description}</div>
                     <div>Location: ${appointment.location}</div>
@@ -164,7 +164,7 @@ function submitNewAppointment(e) {
 }
 
 
-function showTimeslots(appointmentId) {
+function showTimeslots(appointmentId, expirationStatus) {
     // console.log("showTimeslots")
     appointmentId = parseInt(appointmentId);
     $.ajax({
@@ -177,8 +177,7 @@ function showTimeslots(appointmentId) {
             console.log(response);
             response.forEach((timeslot,index) => {
                 var timeslotHTML = `
-                <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2
-                ">
+                <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
                     <div>
                         <h2>Option ${index + 1}</h2>
                         <div class="informationSingleTimeSlot">
@@ -190,14 +189,24 @@ function showTimeslots(appointmentId) {
                         <div>
                             <label for="endTime">End Time: ${timeslot.end_time}</label>
                         </div>
-                    </div>
-                    <div>
-                        <input class="checkbox" name="${timeslot.id}" type="checkbox" />
-                    </div>    
+                    </div>  
                 </div>
                 `;
 
-                $("#formRow").append(timeslotHTML)});
+                $("#formRow").append(timeslotHTML)
+                if(expirationStatus != "expired"){
+                    let input = `<div>
+                                    <input class="checkbox" name="${timeslot.id}" type="checkbox" />
+                                 </div>`
+                    $("#singleAppointmentOption" + index).append(input);
+                    console.log("active");
+                } else {
+                    console.log("expired");
+                }
+            });
+                
+
+                
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -246,10 +255,12 @@ function showComments(id){
 */
 }
  
-function showSingleAppointment(event){
+function showSingleAppointment(event, expirationStatus){
     $("#fullPage").hide();
     let title = $(event.target).text();
     
+    console.log(expirationStatus);
+
     let schedule = $('<form class="container mt-3" id="schedule"></form>');
     $('#container').append(schedule);
 
@@ -261,27 +272,37 @@ function showSingleAppointment(event){
 
     let backButton = $('<button id="back">Back</button>')
     let formRow = $('<div class="row" id="formRow"></div>');
-    let nameColon = $(`
-            <div class="col">
-            <div class="card mb-3">
-                <div class="card-body">
-                <input class="form-control mb-2" placeholder="Your name" name="name" />
-                <button type="submit">Book</button>
-                </div>
+    if(expirationStatus != "expired"){
+        let nameColon = $(`
+        <div class="col">
+        <div class="card mb-3">
+            <div class="card-body">
+            <input class="form-control mb-2" placeholder="Your name" name="name" />
+            <button type="submit">Book</button>
             </div>
-            </div>
-    `);
+        </div>
+        </div>
+        `);
+        formRow.append(nameColon);
+    }
+    
 
     let commentSection = $(`
         <div class="container mt-3" id="commentSection">
         <h3>Comments</h3>
             <div id="comments"></div>
-            <textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>
         </div>`
     );
-    
-    formRow.append(nameColon);
+
     schedule.append(backButton, titleRow, formRow, commentSection);
+
+    if(expirationStatus != "expired"){
+        let commentTextarea = `<textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>`;
+        $("#commentSection").append(commentTextarea);
+    }
+    
+    
+    
     
     getAppointmentId(title, function(appointmentId) {
         console.log(appointmentId);
