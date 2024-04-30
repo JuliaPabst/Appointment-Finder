@@ -35,7 +35,7 @@ class DataHandler
 
     public function addAppointment($appointmentData)
     {
-        $data = json_decode($appointmentData, true);
+        $data = json_decode($appointmentData, true);    //true: decode as associative array
         $title = $data["title"];
         $location = $data["location"];
         $expiration_date = $data["expiration_date"];
@@ -49,7 +49,20 @@ class DataHandler
         // Get ID of last inserted record
         $appointment_id = $this->db->insert_id;
         $stmt->close();
+        $this->addTimeSlots($appointmentData, $appointment_id);
         return $appointment_id; 
+    }
+
+    public function addTimeSlots($appointmentData, $appointment_id)
+    {
+        $data = json_decode($appointmentData, true);
+        $datesArray = $data['dates'];
+        foreach ($datesArray as $date) {
+            $stmt = $this->db->prepare("INSERT INTO timeslots (date, begin_time, end_time, fk_appointment_id) VALUES (?, ?, ?, ?)");
+            $stmt->bind_param("ssss", $date['date'], $date['startTime'], $date['endTime'], $appointment_id);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
 
