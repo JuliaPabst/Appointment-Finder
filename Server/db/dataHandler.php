@@ -79,15 +79,23 @@ class DataHandler
         return $user_id; 
     }
 
-    public function addVoting($userData)
+    public function addVoting($userData, $user_id)
     {
-        
-
+        $data = json_decode($userData, true);
+        $timeslotArray = $data['chosen'];
+        foreach ($timeslotArray as $timeslot) {
+            $stmt = $this->db->prepare("INSERT INTO users_timeslots (fk_user_id, fk_timeslot_id) VALUES (?, ?)");
+            $stmt->bind_param("ii", $user_id, $timeslot);
+            $stmt->execute();
+           
+        }
+        $stmt->close();
     }
 
     public function submitNewVoting($userData)
     {
         $user_id = $this->addUser($userData);
+        $this->addVoting($userData, $user_id);
         return $user_id;
     }
 

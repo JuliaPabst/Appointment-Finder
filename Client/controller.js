@@ -17,7 +17,6 @@ $(document).ready(function () {
     showOverview();
 
     
-    submitNewVoting();
 });
 
 function showOverview() {
@@ -319,6 +318,7 @@ function submitAppointmentBooking(e){
     for (let key in formDataObject){
         if (formDataObject.hasOwnProperty(key) && formDataObject[key] === "on") {
             chosenArray.push(key);
+
         }
     }
 
@@ -349,7 +349,3 @@ function submitAppointmentBooking(e){
 });
 }
 
-
-function submitNewVoting(){
-    
-}

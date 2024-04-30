@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 30. Apr 2024 um 15:21
+-- Erstellungszeit: 30. Apr 2024 um 18:01
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -100,8 +100,7 @@ ALTER TABLE `users`
 -- Indizes für die Tabelle `users_timeslots`
 --
 ALTER TABLE `users_timeslots`
-  ADD PRIMARY KEY (`fk_user_id`),
-  ADD KEY `FK_users_timeslots_timeslots` (`fk_timeslot_id`);
+  ADD PRIMARY KEY (`fk_user_id`,`fk_timeslot_id`);
 
 --
 -- AUTO_INCREMENT für exportierte Tabellen
@@ -111,19 +110,19 @@ ALTER TABLE `users_timeslots`
 -- AUTO_INCREMENT für Tabelle `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT für Tabelle `timeslots`
 --
 ALTER TABLE `timeslots`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT für Tabelle `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
 
 --
 -- Constraints der exportierten Tabellen
@@ -134,13 +133,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `timeslots`
   ADD CONSTRAINT `FK_timeslots_appointments` FOREIGN KEY (`fk_appointment_id`) REFERENCES `appointments` (`id`);
-
---
--- Constraints der Tabelle `users_timeslots`
---
-ALTER TABLE `users_timeslots`
-  ADD CONSTRAINT `FK_users_timeslots_timeslots` FOREIGN KEY (`fk_timeslot_id`) REFERENCES `timeslots` (`id`),
-  ADD CONSTRAINT `FK_users_timeslots_users` FOREIGN KEY (`fk_user_id`) REFERENCES `users` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
