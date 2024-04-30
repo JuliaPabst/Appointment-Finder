@@ -314,6 +314,14 @@ function submitAppointmentBooking(e){
         formDataObject[item.name] = item.value;
     });
 
+    let chosenArray = [];
+
+    for (let key in formDataObject){
+        if (formDataObject.hasOwnProperty(key) && formDataObject[key] === "on") {
+            chosenArray.push(key);
+        }
+    }
+
     let userData = {
         username: formDataObject.name,
         comment: formDataObject.comment,
@@ -328,7 +336,7 @@ function submitAppointmentBooking(e){
         url: '../Server/serviceHandler.php',
         data: {
         method: 'submitNewVoting', 
-        userData: JSON.stringify(formDataObject),
+        userData: JSON.stringify(userData),
         },
         dataType: 'json',
         success: function(response) {

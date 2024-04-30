@@ -79,14 +79,13 @@ class DataHandler
         return $user_id; 
     }
 
-    public function addVoting($votingData)
+    public function addVoting($userData)
     {
-        $this->addUser($votingData);
         
 
     }
 
-    public function submitNewVoting($userData, $chosen_timeslots)
+    public function submitNewVoting($userData)
     {
         $user_id = $this->addUser($userData);
         return $user_id;
