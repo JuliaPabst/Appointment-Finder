@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Erstellungszeit: 30. Apr 2024 um 13:30
+-- Erstellungszeit: 30. Apr 2024 um 13:41
 -- Server-Version: 10.4.28-MariaDB
 -- PHP-Version: 8.2.4
 
@@ -35,14 +35,6 @@ CREATE TABLE `appointments` (
   `date` date NOT NULL,
   `expiration_date` date NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Daten für Tabelle `appointments`
---
-
-INSERT INTO `appointments` (`id`, `title`, `description`, `location`, `date`, `expiration_date`) VALUES
-(1, 'Test', NULL, 'Testlocation', '2024-04-02', '2024-04-01'),
-(2, 'blabla', NULL, 'blabla', '2024-04-02', '2024-04-30');
 
 -- --------------------------------------------------------
 
@@ -119,7 +111,7 @@ ALTER TABLE `users_timeslots`
 -- AUTO_INCREMENT für Tabelle `appointments`
 --
 ALTER TABLE `appointments`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
 -- AUTO_INCREMENT für Tabelle `timeslots`
