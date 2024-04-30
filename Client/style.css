@@ -48,3 +48,10 @@ label{
 .singleComment{
     padding-bottom: 30px;
 }
+
+.singleAppointmentOption{
+    border-width: 2px;
+    border-style: solid;
+    border-color: white;
+    padding: 10px;
+}

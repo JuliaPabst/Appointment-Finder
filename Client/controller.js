@@ -177,18 +177,20 @@ function showTimeslots(appointmentId) {
             // console.log(response);
             response.forEach((timeslot,index) => {
                 var timeslotHTML = `
-                <div class="col">
-                <div>
-                    <div class="informationSingleTimeSlot">
-                        <label for="${timeslot.id}">Date: ${timeslot.date}</label>
-                    </div>
+                <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2
+                ">
                     <div>
-                        <label for="beginTime">Begin Time: ${timeslot.begin_time}</label>
+                        <h2>Option ${index + 1}</h2>
+                        <div class="informationSingleTimeSlot">
+                            <label for="${timeslot.id}"> Date: ${timeslot.date}</label>
+                        </div>
+                        <div>
+                            <label for="beginTime">Begin Time: ${timeslot.begin_time}</label>
+                        </div>
+                        <div>
+                            <label for="endTime">End Time: ${timeslot.end_time}</label>
+                        </div>
                     </div>
-                     <div>
-                        <label for="endTime">End Time: ${timeslot.end_time}</label>
-                    </div>
-                </div>
                     <div>
                         <input class="checkbox" name="${timeslot.id}" type="checkbox" />
                     </div>    
@@ -302,6 +304,8 @@ function showSingleAppointment(event){
     })
 }
 
+
+
 function submitAppointmentBooking(e){
     let formDataArray = $(e.target).serializeArray();
 
@@ -333,4 +337,9 @@ function submitAppointmentBooking(e){
 });
 
     console.log(formDataObject);
+}
+
+
+function submitNewVoting(){
+    
 }
