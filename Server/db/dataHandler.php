@@ -33,8 +33,13 @@ class DataHandler
         return $timeslots;
     }
 
-    public function addAppointment($title, $location, $expiration_date)
+    public function addAppointment($appointmentData)
     {
+        $data = json_decode($appointmentData, true);
+        $title = $data["title"];
+        $location = $data["location"];
+        $expiration_date = $data["expiration_date"];
+
         $stmt = $this->db->prepare("INSERT INTO appointments (title, location, expiration_date) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $title, $location, $expiration_date);
         $stmt->execute();
@@ -84,6 +89,7 @@ class DataHandler
         return $result;
     }
     
+
 
     
 }

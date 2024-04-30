@@ -10,7 +10,7 @@ class SimpleLogic
         $this->dh = new DataHandler($db_obj);
     }
 
-    function handleRequest($method, $param, $title, $location, $date, $expiration_date)
+    function handleRequest($method, $param, $appointmentData)
     {
         switch ($method) {
             case "queryAppointments":
@@ -32,7 +32,7 @@ class SimpleLogic
                 $res = $this->dh->queryTimeslotsByAppointmentId($param);
                 break;
             case "addAppointment":
-                $res = $this->dh->addAppointment($title, $location, $expiration_date);
+                $res = $this->dh->addAppointment($appointmentData);
                 break;
             default:
                 $res = null;

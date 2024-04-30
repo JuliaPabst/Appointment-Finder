@@ -12,20 +12,13 @@ $db_obj = new mysqli($host, $user, $password, $database);
 
 $param = "";
 $method = "";
-$title = "";
-$location = "";
-$date = "";
-$expiration_date = "";
+$appointmentData = "";
 
 isset($_POST["method"]) ? $method = $_POST["method"] : false;
-isset($_POST["param"]) ? $param = $_POST["param"] : false;
-isset($_POST["title"]) ? $title = $_POST["title"] : false;
-isset($_POST["location"]) ? $location = $_POST["location"] : false;
-isset($_POST["date"]) ? $date = $_POST["date"] : false;
-isset($_POST["expiration_date"]) ? $expiration_date = $_POST["expiration_date"] : false;
+isset($_POST["appointmentData"]) ? $appointmentData = $_POST["appointmentData"] : false;
 
 $logic = new SimpleLogic($db_obj);
-$result = $logic->handleRequest($method, $param, $title, $location, $date, $expiration_date);
+$result = $logic->handleRequest($method, $param, $appointmentData);
 if ($result == null) {
     response("POST", 400, null);
 } else {

@@ -132,16 +132,14 @@ function submitNewAppointment(e) {
         expiration_date: $('#create-expirationDateInput').val()
     };
 
-    //console.log(formData);
-    
-    //console.log(formDataObject);
+
     // Make an AJAX request to add the new appointment
     $.ajax({
         type: "POST",
         url: '../Server/serviceHandler.php',
         data: {
         method: 'addAppointment', 
-        appointmentData: JSON.stringify(formData)
+        appointmentData: JSON.stringify(formData),
         },
         dataType: 'json',
         success: function(response) {
