@@ -15,6 +15,7 @@ $appointmentData = "";
 $userData = "";
 
 isset($_POST["method"]) ? $method = $_POST["method"] : false;
+isset($_POST["param"]) ? $param = $_POST["param"] : false;
 isset($_POST["appointmentData"]) ? $appointmentData = $_POST["appointmentData"] : false;
 isset($_POST["userData"]) ? $userData = $_POST["userData"] : false;
 

@@ -166,14 +166,15 @@ function submitNewAppointment(e) {
 
 function showTimeslots(appointmentId) {
     // console.log("showTimeslots")
+    appointmentId = parseInt(appointmentId);
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
         cache: false,
-        data: {method: "queryTimeslots", param: appointmentId},
+        data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            // console.log(response);
+            console.log(response);
             response.forEach((timeslot,index) => {
                 var timeslotHTML = `
                 <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2
@@ -204,7 +205,7 @@ function showTimeslots(appointmentId) {
     });
 }
 
-function getAppointmentId(title){
+function getAppointmentId(title, callback){
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -212,11 +213,12 @@ function getAppointmentId(title){
         data: {method: "queryAppointmentByTitle", param: title},
         dataType: "json",
         success: function (response) {
-            //console.log(response);
-            return response[0].id;
+            callback(response[0].id);
         }
+        
     });
 }
+
 
 function showComments(id){
     // ajax call to show all comments related to an appointment with the usernames and the comment
@@ -281,9 +283,13 @@ function showSingleAppointment(event){
     formRow.append(nameColon);
     schedule.append(backButton, titleRow, formRow, commentSection);
     
-    let appointmentId = getAppointmentId(title);
-    showTimeslots(appointmentId); 
-    showComments(appointmentId);
+    getAppointmentId(title, function(appointmentId) {
+        console.log(appointmentId);
+        showTimeslots(appointmentId); 
+        // You can use the appointmentId here or pass it to another function
+    });
+    
+    //showComments(appointmentId);
 
     let details = $('<div id="details"></div>').append(schedule);
     let body = $('body');

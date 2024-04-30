@@ -120,24 +120,41 @@ class DataHandler
 
     public function queryAppointmentByTitle($title)
     {
-        $result = array();
-        foreach ($this->queryAppointments() as $val) {
-            if ($val->title == $title) {
-                array_push($result, $val);
-            }
+        $query = "SELECT * FROM appointments WHERE title = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("s", $title);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $appointments = array();
+        while ($row = $result->fetch_assoc()) {
+            $appointment = new Appointment($row['id'], $row['title'], $row['description'], $row['location'], $row['duration'], $row['expiration_date']);
+            $appointments[] = $appointment;
         }
-        return $result;
+        
+        $stmt->close();
+        
+        return $appointments;
     }
 
     public function queryTimeslotsByAppointmentId($fk_appointment_id)
     {
-        $result = array();
-        foreach ($this->queryTimeslots() as $val) {
-            if ($val->fk_appointment_id == $fk_appointment_id) {
-                array_push($result, $val);
-            }
+
+        $query = "SELECT * FROM timeslots WHERE fk_appointment_id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $fk_appointment_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        
+        $timeslots = array();
+        while ($row = $result->fetch_assoc()) {
+            $timeslot = new TimeSlot($row['id'], $row['date'], $row['begin_time'], $row['end_time'], $row['fk_appointment_id']);
+            $timeslots[] = $timeslot;
         }
-        return $result;
+        
+        $stmt->close();
+        
+        return $timeslots;
     }
     
 
