@@ -314,10 +314,24 @@ function submitAppointmentBooking(e){
         formDataObject[item.name] = item.value;
     });
 
+    
+
+    let chosenArray = [];
+
+    for (let key in formDataObject){
+        if (formDataObject.hasOwnProperty(key) && formDataObject[key] === "on") {
+            chosenArray.push(key);
+        }
+    }
+
     let userData = {
         username: formDataObject.name,
-        comment: formDataObject.comment
+        comment: formDataObject.comment,
+        chosen: chosenArray
     };
+
+    console.log(userData);
+    
 
     $.ajax({
         type: "POST",
@@ -335,8 +349,6 @@ function submitAppointmentBooking(e){
             console.error('AJAX error:', textStatus, ':', errorThrown);
         }
 });
-
-    console.log(formDataObject);
 }
 
 
