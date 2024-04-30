@@ -1,9 +1,8 @@
 <?php
 include("businesslogic/simpleLogic.php");
-require 'db/dbaccess.php';
+require 'db/config.php';
 
-$db_obj = new mysqli($host, $user, $password, $database);
-
+$db_obj = new mysqli(DB_HOST, DB_USER, DB_PASSWORD, DB_DATABASE);
     if ($db_obj->connect_error) {
         echo "Connection Error: " . $db_obj->connect_error;
         exit();
