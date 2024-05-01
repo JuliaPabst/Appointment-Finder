@@ -176,6 +176,12 @@ class DataHandler
     
     public function deleteAppointment($appointment_id)
     {
+        // Delete entries from users_timeslot table corresponding to the deleted timeslots
+        $stmt = $this->db->prepare("DELETE FROM users_timeslots WHERE fk_timeslot_id IN (SELECT id FROM timeslots WHERE fk_appointment_id = ?)");
+        $stmt->bind_param("i", $appointment_id);
+        $stmt->execute();
+        $stmt->close();
+
         // Löschen der zugehörigen Zeitschlitze
         $stmt = $this->db->prepare("DELETE FROM timeslots WHERE fk_appointment_id = ?");
         $stmt->bind_param("i", $appointment_id);
