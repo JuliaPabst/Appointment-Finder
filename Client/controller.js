@@ -175,49 +175,58 @@ function showTimeslots(appointmentId, expirationStatus) {
         dataType: "json",
         success: function(response) {
             
-            response.forEach((timeslot,index) => {
-
+            response.forEach((timeslot, index) => {
                 var timeslotHTML = `
-                <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
-                    <div>
-                        <h2>Option ${index + 1}</h2>
-                        <div class="informationSingleTimeSlot">
-                            <label for="${timeslot.id}"> Date: ${timeslot.date}</label>
-                        </div>
+                    <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
                         <div>
-                            <label for="beginTime">Begin Time: ${timeslot.begin_time}</label>
+                            <h2>Option ${index + 1}</h2>
+                            <div class="informationSingleTimeSlot">
+                                <label for="${timeslot.id}"> Date: ${timeslot.date}</label>
+                            </div>
+                            <div>
+                                <label for="beginTime">Begin Time: ${timeslot.begin_time}</label>
+                            </div>
+                            <div>
+                                <label for="endTime">End Time: ${timeslot.end_time}</label>
+                            </div>
                         </div>
-                        <div>
-                            <label for="endTime">End Time: ${timeslot.end_time}</label>
-                        </div>
-                    </div>  
-                </div>
+                        
+                    </div>
                 `;
-
-                $("#formRow").append(timeslotHTML)
-                if(expirationStatus != "expired"){
+            
+                $("#formRow").append(timeslotHTML);
+            
+                if (expirationStatus != "expired") {
                     let input = `<div>
                                     <input class="checkbox" name="${timeslot.id}" type="checkbox" />
-                                 </div>`
+                                </div>`;
                     $("#singleAppointmentOption" + index).append(input);
-                    //console.log("active");
-                } else {
-                    //console.log("expired");
                 }
 
-                //array, which users voted on this
+                let userinformation =` <!-- Container for user information -->
+                <hr><div id="userInformation${index}" class="user-information"></div>`;
+                $("#singleAppointmentOption" + index).append(userinformation);
+            
+                // Append users who voted underneath each timeslot
                 whoVotedThis(timeslot.id, function(users_who_voted) {
-                    console.log(users_who_voted);
+                    var usersHTML = '';
                     users_who_voted.forEach((user, index) => {
-                        //Todo: replace console.log with generated html text
-                        console.log(user.username);
-                        console.log(user.comment);
+                        usersHTML += `
+                            <div class="user-info">
+                                <p>Username: ${user.username}</p>
+                                <p>Comment: ${user.comment}</p>
+                            </div>`;
+                        // Add divider between users
+                        if (index < users_who_voted.length - 1) {
+                            usersHTML += `<hr>`;
+                        }
                     });
+                    // Add divider between timeslot and users
+                    usersHTML += `<hr>`;
+                    $("#userInformation" + index).html(usersHTML);
                 }); 
-                
-
-
             });
+            
                 
 
                 
