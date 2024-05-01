@@ -329,7 +329,8 @@ function showSingleAppointment(event, expirationStatus){
         </div>`
     );
 
-    let backButton = $('<button id="back">Back</button>')
+    let backButton = $('<button id="back">Back</button>');
+    let deleteButton = $('<button id="delete">Delete Appointment</button>'); // Add delete button
     let formRow = $('<div class="row" id="formRow"></div>');
     if(expirationStatus != "expired"){
         let nameColon = $(`
@@ -344,7 +345,6 @@ function showSingleAppointment(event, expirationStatus){
         `);
         formRow.append(nameColon);
     }
-    
 
     let commentSection = $(`
         <div class="container mt-3" id="commentSection">
@@ -353,20 +353,16 @@ function showSingleAppointment(event, expirationStatus){
         </div>`
     );
 
-    schedule.append(backButton, titleRow, formRow, commentSection);
+    schedule.append(backButton, deleteButton, titleRow, formRow, commentSection); // Add delete button to the schedule
 
     if(expirationStatus != "expired"){
         let commentTextarea = `<textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>`;
         $("#commentSection").append(commentTextarea);
     }
     
-    
-    
-    
     getAppointmentId(title, function(appointmentId) {
         //console.log(appointmentId);
         showTimeslots(appointmentId);
-        
     });
     
     //showComments(appointmentId);
@@ -380,13 +376,20 @@ function showSingleAppointment(event, expirationStatus){
         $("#details").remove();
     });
 
+    $('#delete').on('click', function(e) { // Add event listener for delete button
+        e.preventDefault();
+        // Call a function to handle appointment deletion
+        deleteAppointment(title);
+    });
+
     $('#schedule').on('submit', function(e){
         e.preventDefault();
         submitAppointmentBooking(e);
         $("#fullPage").show();
         $("#details").remove();
-    })
+    });
 }
+
 
 
 
