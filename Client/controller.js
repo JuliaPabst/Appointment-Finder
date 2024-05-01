@@ -113,9 +113,9 @@ function submitNewAppointment(e) {
     e.preventDefault();
   
     let appointmentDates = [];
-    console.log($('.oneAppointmentContainer'));
+    //console.log($('.oneAppointmentContainer'));
     $('.oneAppointmentContainer').each(function() {
-        console.log("an Element in the oneAppointmentContainerArray");
+        //console.log("an Element in the oneAppointmentContainerArray");
         let date = $(this).find('.dateInput').val();
         let startTime = $(this).find('.startTimeInput').val();
         let endTime = $(this).find('.endTimeInput').val();
@@ -137,7 +137,7 @@ function submitNewAppointment(e) {
         expiration_date: $('#create-expirationDateInput').val()
     };
 
-    console.log(formData);
+    //console.log(formData);
 
 
     // Make an AJAX request to add the new appointment
@@ -150,7 +150,7 @@ function submitNewAppointment(e) {
         },
         dataType: 'json',
         success: function(response) {
-            console.log('New appointment added successfully:', response);
+            //console.log('New appointment added successfully:', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -174,7 +174,7 @@ function showTimeslots(appointmentId, expirationStatus) {
         data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            console.log(response);
+            //console.log(response);
             response.forEach((timeslot,index) => {
                 var timeslotHTML = `
                 <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
@@ -199,14 +199,33 @@ function showTimeslots(appointmentId, expirationStatus) {
                                     <input class="checkbox" name="${timeslot.id}" type="checkbox" />
                                  </div>`
                     $("#singleAppointmentOption" + index).append(input);
-                    console.log("active");
+                    //console.log("active");
                 } else {
-                    console.log("expired");
+                    //console.log("expired");
                 }
             });
                 
 
                 
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, ":", errorThrown);
+        }
+    });
+}
+
+function whoVotedThis(timeslotId) {
+    timeslotId = parseInt(timeslotId);
+    $.ajax({
+        type: "POST",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "whoVotedThis", param: timeslotId},
+        dataType: "json",
+        success: function(response) {
+            console.log(response);
+            
+            
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -259,7 +278,7 @@ function showSingleAppointment(event, expirationStatus){
     $("#fullPage").hide();
     let title = $(event.target).text();
     
-    console.log(expirationStatus);
+    //console.log(expirationStatus);
 
     let schedule = $('<form class="container mt-3" id="schedule"></form>');
     $('#container').append(schedule);
@@ -305,9 +324,9 @@ function showSingleAppointment(event, expirationStatus){
     
     
     getAppointmentId(title, function(appointmentId) {
-        console.log(appointmentId);
-        showTimeslots(appointmentId); 
-        // You can use the appointmentId here or pass it to another function
+        //console.log(appointmentId);
+        showTimeslots(appointmentId);
+        whoVotedThis(19); 
     });
     
     //showComments(appointmentId);
@@ -354,7 +373,7 @@ function submitAppointmentBooking(e){
         chosen: chosenArray
     };
 
-    console.log(userData);
+    //console.log(userData);
     
 
     $.ajax({
@@ -366,7 +385,7 @@ function submitAppointmentBooking(e){
         },
         dataType: 'json',
         success: function(response) {
-            console.log('Voting succesful: userid', response);
+            //console.log('Voting succesful: userid', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {

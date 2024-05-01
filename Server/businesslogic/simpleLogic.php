@@ -37,6 +37,9 @@ class SimpleLogic
             case "submitNewVoting":
                 $res = $this->dh->submitNewVoting($userData);
                 break;
+            case "whoVotedThis":
+                $res = $this->dh->whoVotedThis($param);
+                break;
             default:
                 $res = null;
                 break;

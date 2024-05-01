@@ -33,6 +33,22 @@ class DataHandler
         return $timeslots;
     }
 
+    public function whoVotedThis($timeslot_id)
+    {
+        
+        $query = "SELECT * FROM users_timeslots WHERE fk_timeslot_id = ?";
+        $stmt = $this->db->prepare($query);
+        $stmt->bind_param("i", $timeslot_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $users = array();
+        while ($row = $result->fetch_assoc()) {
+            $user = $row['fk_user_id'];
+            $users[] = $user;
+        }
+        return $users;
+    }
+
     public function addAppointment($appointmentData)
     {
         $data = json_decode($appointmentData, true);    //true: decode as associative array
