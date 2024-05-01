@@ -207,8 +207,12 @@ function showTimeslots(appointmentId, expirationStatus) {
 
                 //array, which users voted on this
                 whoVotedThis(timeslot.id, function(users_who_voted) {
-                    //Todo: replace console.log with generated html text
                     console.log(users_who_voted);
+                    users_who_voted.forEach((user, index) => {
+                        //Todo: replace console.log with generated html text
+                        console.log(user.username);
+                        console.log(user.comment);
+                    });
                 }); 
                 
 
