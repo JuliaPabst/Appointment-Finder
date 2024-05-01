@@ -255,7 +255,7 @@ function whoVotedThis(timeslotId, callback) {
     });
 }
 
-function deleteAppointment(appointmentId) {
+function deleteAppointment(appointmentId, callback) {
     appointmentId = parseInt(appointmentId);
     $.ajax({
         type: "POST",
@@ -264,14 +264,17 @@ function deleteAppointment(appointmentId) {
         data: {method: "deleteAppointment", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            console.log(response)
-             
+            console.log(response);
+            if (typeof callback === "function") {
+                callback(); // Call the callback function if provided
+            }
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
         }
     });
 }
+
 
 function getAppointmentId(title, callback){
     $.ajax({
@@ -377,11 +380,19 @@ function showSingleAppointment(event, expirationStatus) {
     $('#delete').on('click', function(e) {
         e.preventDefault();
         if (appointmentId) { // Ensure appointmentId is defined
-            deleteAppointment(appointmentId); // Pass appointmentId to deleteAppointment
+            deleteAppointment(appointmentId, function() {
+            // Success callback: after deletion, show overview
+            showOverview();
+            // Remove the appointment detail view
+            $("#fullPage").show();
+            $("#details").remove();
+                });
         } else {
             console.error("Appointment ID not found.");
         }
     });
+
+
 
     $('#schedule').on('submit', function(e) {
         e.preventDefault();
