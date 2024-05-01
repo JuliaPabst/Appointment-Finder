@@ -174,8 +174,14 @@ function showTimeslots(appointmentId, expirationStatus) {
         data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            //console.log(response);
+            
             response.forEach((timeslot,index) => {
+
+                //array, which users voted on this
+                whoVotedThis(timeslot.id, function(users_who_voted) {
+                    console.log(users_who_voted);
+                }); 
+
                 var timeslotHTML = `
                 <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
                     <div>
@@ -325,9 +331,7 @@ function showSingleAppointment(event, expirationStatus){
     getAppointmentId(title, function(appointmentId) {
         //console.log(appointmentId);
         showTimeslots(appointmentId);
-        whoVotedThis(19, function(users_who_voted) {
-            console.log(users_who_voted);
-        }); 
+        
     });
     
     //showComments(appointmentId);
