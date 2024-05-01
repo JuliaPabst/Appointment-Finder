@@ -34,4 +34,13 @@ class TimeSlot {
     }
 }
 
+class User{
+  public $username;
+  public $comment;
+  function __construct($username, $comment) {
+    $this->username = $username;
+    $this->comment = $comment;
+
+  }
+}
 
