@@ -314,11 +314,9 @@ function showComments(id){
 */
 }
  
-function showSingleAppointment(event, expirationStatus){
+function showSingleAppointment(event, expirationStatus) {
     $("#fullPage").hide();
     let title = $(event.target).text();
-    
-    //console.log(expirationStatus);
 
     let schedule = $('<form class="container mt-3" id="schedule"></form>');
     $('#container').append(schedule);
@@ -330,42 +328,42 @@ function showSingleAppointment(event, expirationStatus){
     );
 
     let backButton = $('<button id="back">Back</button>');
-    let deleteButton = $('<button id="delete">Delete Appointment</button>'); // Add delete button
+    let deleteButton = $('<button id="delete">Delete Appointment</button>');
     let formRow = $('<div class="row" id="formRow"></div>');
-    if(expirationStatus != "expired"){
+    if (expirationStatus != "expired") {
         let nameColon = $(`
-        <div class="col">
-        <div class="card mb-3">
-            <div class="card-body">
-            <input class="form-control mb-2" placeholder="Your name" name="name" />
-            <button type="submit">Book</button>
+            <div class="col">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <input class="form-control mb-2" placeholder="Your name" name="name" />
+                        <button type="submit">Book</button>
+                    </div>
+                </div>
             </div>
-        </div>
-        </div>
         `);
         formRow.append(nameColon);
     }
 
     let commentSection = $(`
         <div class="container mt-3" id="commentSection">
-        <h3>Comments</h3>
+            <h3>Comments</h3>
             <div id="comments"></div>
         </div>`
     );
 
-    schedule.append(backButton, deleteButton, titleRow, formRow, commentSection); // Add delete button to the schedule
+    schedule.append(backButton, deleteButton, titleRow, formRow, commentSection);
 
-    if(expirationStatus != "expired"){
+    if (expirationStatus != "expired") {
         let commentTextarea = `<textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>`;
         $("#commentSection").append(commentTextarea);
     }
-    
-    getAppointmentId(title, function(appointmentId) {
-        //console.log(appointmentId);
+
+    let appointmentId; // Variable to store the appointment ID
+
+    getAppointmentId(title, function(appointmentIdResult) {
+        appointmentId = appointmentIdResult; // Save the appointment ID
         showTimeslots(appointmentId);
     });
-    
-    //showComments(appointmentId);
 
     let details = $('<div id="details"></div>').append(schedule);
     let body = $('body');
@@ -376,19 +374,23 @@ function showSingleAppointment(event, expirationStatus){
         $("#details").remove();
     });
 
-    $('#delete').on('click', function(e) { // Add event listener for delete button
+    $('#delete').on('click', function(e) {
         e.preventDefault();
-        // Call a function to handle appointment deletion
-        deleteAppointment(title);
+        if (appointmentId) { // Ensure appointmentId is defined
+            deleteAppointment(appointmentId); // Pass appointmentId to deleteAppointment
+        } else {
+            console.error("Appointment ID not found.");
+        }
     });
 
-    $('#schedule').on('submit', function(e){
+    $('#schedule').on('submit', function(e) {
         e.preventDefault();
         submitAppointmentBooking(e);
         $("#fullPage").show();
         $("#details").remove();
     });
 }
+
 
 
 
