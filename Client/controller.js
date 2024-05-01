@@ -177,11 +177,6 @@ function showTimeslots(appointmentId, expirationStatus) {
             
             response.forEach((timeslot,index) => {
 
-                //array, which users voted on this
-                whoVotedThis(timeslot.id, function(users_who_voted) {
-                    console.log(users_who_voted);
-                }); 
-
                 var timeslotHTML = `
                 <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
                     <div>
@@ -209,6 +204,15 @@ function showTimeslots(appointmentId, expirationStatus) {
                 } else {
                     //console.log("expired");
                 }
+
+                //array, which users voted on this
+                whoVotedThis(timeslot.id, function(users_who_voted) {
+                    //Todo: replace console.log with generated html text
+                    console.log(users_who_voted);
+                }); 
+                
+
+
             });
                 
 
