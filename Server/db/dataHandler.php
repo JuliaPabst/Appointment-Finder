@@ -35,7 +35,7 @@ class DataHandler
 
     public function whoVotedThis($timeslot_id)
 {
-    $query = "SELECT users.username FROM users_timeslots 
+    $query = "SELECT users.username, users.comment FROM users_timeslots 
           JOIN users ON users.id = users_timeslots.fk_user_id
           WHERE users_timeslots.fk_timeslot_id = ?";
     $stmt = $this->db->prepare($query);
@@ -44,7 +44,7 @@ class DataHandler
     $result = $stmt->get_result();
     $users = array();
     while ($row = $result->fetch_assoc()) {
-        $user = $row["username"]; // Fetch usernames
+        $user = new User($row["username"], $row["comment"]); // Fetch usernames and comments
         $users[] = $user;
     }
     return $users;
@@ -182,7 +182,7 @@ class DataHandler
         $stmt->execute();
         $stmt->close();
 
-        
+
         // Löschen der Termine
         $stmt = $this->db->prepare("DELETE FROM appointments WHERE id = ?");
         $stmt->bind_param("i", $appointment_id);
