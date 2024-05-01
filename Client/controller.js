@@ -242,6 +242,24 @@ function whoVotedThis(timeslotId, callback) {
     });
 }
 
+function deleteAppointment(appointmentId) {
+    appointmentId = parseInt(appointmentId);
+    $.ajax({
+        type: "POST",
+        url: "../Server/serviceHandler.php",
+        cache: false,
+        data: {method: "deleteAppointment", param: appointmentId},
+        dataType: "json",
+        success: function(response) {
+            console.log(response)
+             
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+            console.error("AJAX error:", textStatus, ":", errorThrown);
+        }
+    });
+}
+
 function getAppointmentId(title, callback){
     $.ajax({
         type: "POST",

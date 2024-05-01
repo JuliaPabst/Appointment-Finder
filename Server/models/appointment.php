@@ -34,14 +34,4 @@ class TimeSlot {
     }
 }
 
-class Voting {
-  public $timeSlot; // Instance of TimeSlot
-  public $username;
-  public $comment;
 
-  function __construct($timeSlot, $username, $comment) {
-      $this->timeSlot = $timeSlot;
-      $this->username = $username;
-      $this->comment = $comment;
-  }
-}
