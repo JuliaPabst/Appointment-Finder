@@ -40,6 +40,9 @@ class SimpleLogic
             case "whoVotedThis":
                 $res = $this->dh->whoVotedThis($param);
                 break;
+            case "deleteAppointment":
+                $res = $this->dh->deleteAppointment($param);
+                break;
             default:
                 $res = null;
                 break;
