@@ -34,20 +34,21 @@ class DataHandler
     }
 
     public function whoVotedThis($timeslot_id)
-    {
-        
-        $query = "SELECT * FROM users_timeslots WHERE fk_timeslot_id = ?";
-        $stmt = $this->db->prepare($query);
-        $stmt->bind_param("i", $timeslot_id);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $users = array();
-        while ($row = $result->fetch_assoc()) {
-            $user = $row['fk_user_id'];
-            $users[] = $user;
-        }
-        return $users;
+{
+    $query = "SELECT users.username FROM users_timeslots 
+          JOIN users ON users.id = users_timeslots.fk_user_id
+          WHERE users_timeslots.fk_timeslot_id = ?";
+    $stmt = $this->db->prepare($query);
+    $stmt->bind_param("i", $timeslot_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $users = array();
+    while ($row = $result->fetch_assoc()) {
+        $user = $row["username"]; // Fetch usernames
+        $users[] = $user;
     }
+    return $users;
+}
 
     public function addAppointment($appointmentData)
     {
