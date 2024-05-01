@@ -49,6 +49,8 @@ function showOverview() {
             });
         },
         error: function(jqXHR, textStatus, errorThrown) {
+            var appointmentList = $('#appointmentList');
+            appointmentList.empty();
             console.error("AJAX error:", textStatus, ":", errorThrown);
         }
     });
