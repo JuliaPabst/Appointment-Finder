@@ -25,7 +25,7 @@ $result = $logic->handleRequest($method, $param, $appointmentData, $userData);
 if ($result == null) {
     response("POST", 400, null);
 } else {
-    response("POST", "200", $result);
+    response("POST", 200, $result);
 }
 
 function response($method, $httpStatus, $data)

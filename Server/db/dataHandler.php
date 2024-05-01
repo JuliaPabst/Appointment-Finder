@@ -174,7 +174,26 @@ class DataHandler
         return $timeslots;
     }
     
+    public function deleteAppointment($appointment_id)
+    {
+        // Löschen der zugehörigen Zeitschlitze
+        $stmt = $this->db->prepare("DELETE FROM timeslots WHERE fk_appointment_id = ?");
+        $stmt->bind_param("i", $appointment_id);
+        $stmt->execute();
+        $stmt->close();
 
+        
+        // Löschen der Termine
+        $stmt = $this->db->prepare("DELETE FROM appointments WHERE id = ?");
+        $stmt->bind_param("i", $appointment_id);
+        $stmt->execute();
+        $stmt->close();
+    
+        
+    
+        // Rückgabe des gelöschten Termins
+        return $appointment_id;
+    }
 
     
 }
