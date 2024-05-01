@@ -214,7 +214,7 @@ function showTimeslots(appointmentId, expirationStatus) {
     });
 }
 
-function whoVotedThis(timeslotId) {
+function whoVotedThis(timeslotId, callback) {
     timeslotId = parseInt(timeslotId);
     $.ajax({
         type: "POST",
@@ -223,9 +223,8 @@ function whoVotedThis(timeslotId) {
         data: {method: "whoVotedThis", param: timeslotId},
         dataType: "json",
         success: function(response) {
-            console.log(response);
-            
-            
+            callback(response);
+             
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -326,7 +325,9 @@ function showSingleAppointment(event, expirationStatus){
     getAppointmentId(title, function(appointmentId) {
         //console.log(appointmentId);
         showTimeslots(appointmentId);
-        whoVotedThis(19); 
+        whoVotedThis(19, function(users_who_voted) {
+            console.log(users_who_voted);
+        }); 
     });
     
     //showComments(appointmentId);
