@@ -1,22 +1,12 @@
-//Starting point for JQuery init
-
-
 let data = undefined;
 
 $(document).ready(function () {
-    $("#searchResult").hide();
-    $("#btn_Search").click(function (e) {
-       loaddata($("#seachfield").val());
-    });
-
+    // event listener for add Appointment button 
     $("#newAppointment").click(function (e) {
         showNewAppointmentForm();
     });
 
-
     showOverview();
-
-    
 });
 
 function showOverview() {
@@ -27,11 +17,13 @@ function showOverview() {
         dataType: "json",
         success: function (response) {
             //console.log(response);
+            // empty appointmentList before filling it again 
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
-            $.each(response, function( index, appointment ) {
+            response.forEach( (appointment, index) =>  {
                 var expiredText = 'active';
+                // compare if expiration date is older than current date 
                 if (new Date(appointment.expiration_date) < new Date()) {
                 expiredText = 'expired';
                  }
@@ -43,11 +35,12 @@ function showOverview() {
                     <div>Description: ${appointment.description}</div>
                     <div>Location: ${appointment.location}</div>
                     <div>Expiration status: ${expiredText}</div>
-                </div>
-                `;
+                </div>`;
+
                 appointmentList.append(appointmentHTML);
             });
         },
+        //jqXHR = information of what went wrong in XML 
         error: function(jqXHR, textStatus, errorThrown) {
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
@@ -56,13 +49,10 @@ function showOverview() {
     });
 }
 
-
-
-// post new appointment to database 
 function showNewAppointmentForm() {
-    $("#newAppointment").hide();
+    $("#overview").hide();
 
-    let createContainer = $("<form id='createForm'></form>");
+    let createForm = $("<form id='createForm'></form>");
     let title = $("<div id='create-title'><label for='title'>Title</label><input name='title' id='create-titleInput'></div>");
     let location = $("<div id='create-location'><label for='location'>Location</label><input name='location' id='create-locationInput'></div>");
     let description = $("<div id='create-description'><label for='description'>Description</label><textarea class='form-control mb-2 description'></textarea></div>");
@@ -79,8 +69,8 @@ function showNewAppointmentForm() {
     
     oneAppointment.append(date, startTime, endTime)
     allAppointments.append(oneAppointment);
-    createContainer.append(title, location, description, duration, allAppointments, addDateButton, expiration_date, submitButton, dismissButton);
-    $('#createAppointment').append(createContainer);
+    createForm.append(title, location, description, duration, allAppointments, addDateButton, expiration_date, submitButton, dismissButton);
+    $('#createAppointment').append(createForm);
     
     $('#addOneMoreDateButton').on('click', function(e) {
         e.preventDefault();
@@ -91,11 +81,13 @@ function showNewAppointmentForm() {
         e.preventDefault();
         $('#createForm').remove();
         $("#newAppointment").show();
+        $("#overview").show();
     });
 
     $('#createForm').on('submit', function(e) {
         e.preventDefault();
         submitNewAppointment(e);
+        $("#overview").show();
     });
 }
 
