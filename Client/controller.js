@@ -337,8 +337,6 @@ function showSingleAppointment(event, expirationStatus) {
         }
     });
 
-
-
     $('#schedule').on('submit', function(e) {
         e.preventDefault();
         submitAppointmentBooking(e);
@@ -347,24 +345,23 @@ function showSingleAppointment(event, expirationStatus) {
     });
 }
 
-
-
-
-
 function submitAppointmentBooking(e){
+    //gather all data from form in object with name and structure it in an array
+    // gives back array of objects with name and value 
     let formDataArray = $(e.target).serializeArray();
-
+    console.log(formDataArray);
     let formDataObject = {};
+    // put each item in formDataArray in object and make the name the key
     $.each(formDataArray, function(index, item) {
         formDataObject[item.name] = item.value;
     });
 
     let chosenArray = [];
 
+    // if an id is "on" and part of the formDataObject, it is pushed to the chosenArray
     for (let key in formDataObject){
         if (formDataObject.hasOwnProperty(key) && formDataObject[key] === "on") {
             chosenArray.push(key);
-
         }
     }
 
@@ -373,9 +370,6 @@ function submitAppointmentBooking(e){
         comment: formDataObject.comment,
         chosen: chosenArray
     };
-
-    //console.log(userData);
-    
 
     $.ajax({
         type: "POST",
@@ -386,7 +380,7 @@ function submitAppointmentBooking(e){
         },
         dataType: 'json',
         success: function(response) {
-            //console.log('Voting succesful: userid', response);
+            console.log('Voting succesful: userid', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
