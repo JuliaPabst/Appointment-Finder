@@ -1,6 +1,3 @@
-//Starting point for JQuery init
-
-
 let data = undefined;
 
 $(document).ready(function () {
@@ -15,8 +12,6 @@ $(document).ready(function () {
 
 
     showOverview();
-
-    
 });
 
 function showOverview() {
@@ -49,16 +44,11 @@ function showOverview() {
             });
         },
         error: function(jqXHR, textStatus, errorThrown) {
-            var appointmentList = $('#appointmentList');
-            appointmentList.empty();
             console.error("AJAX error:", textStatus, ":", errorThrown);
         }
     });
 }
 
-
-
-// post new appointment to database 
 function showNewAppointmentForm() {
     $("#newAppointment").hide();
 
@@ -128,8 +118,6 @@ function submitNewAppointment(e) {
         });
     });
 
-    
-
     let formData = {
         title: $('#create-titleInput').val(),
         location: $('#create-locationInput').val(),
@@ -138,11 +126,8 @@ function submitNewAppointment(e) {
         dates: appointmentDates,
         expiration_date: $('#create-expirationDateInput').val()
     };
-
     //console.log(formData);
 
-
-    // Make an AJAX request to add the new appointment
     $.ajax({
         type: "POST",
         url: '../Server/serviceHandler.php',
@@ -160,7 +145,6 @@ function submitNewAppointment(e) {
         }
 });
 
-  // Remove the form after submission
   $('#createForm').remove();
   $("#newAppointment").show();
 }
@@ -198,6 +182,7 @@ function showTimeslots(appointmentId, expirationStatus) {
             
                 $("#formRow").append(timeslotHTML);
             
+                console.log(expirationStatus);
                 if (expirationStatus != "expired") {
                     let input = `<div>
                                     <input class="checkbox" name="${timeslot.id}" type="checkbox" />
@@ -223,15 +208,10 @@ function showTimeslots(appointmentId, expirationStatus) {
                             usersHTML += `<hr>`;
                         }
                     });
-                    // Add divider between timeslot and users
                     usersHTML += `<hr>`;
                     $("#userInformation" + index).html(usersHTML);
                 }); 
-            });
-            
-                
-
-                
+            });     
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -291,33 +271,6 @@ function getAppointmentId(title, callback){
         
     });
 }
-
-
-function showComments(id){
-    // ajax call to show all comments related to an appointment with the usernames and the comment
-    
-    console.log($('#comments'));
-
-    let singleComment = $('<div class="singleComment"></div>');
-    let userName = $('<div class="userName">Username Placeholder</div>')
-    let comment = $('<div class="comment">Comment Placeholder</div>')
-    singleComment.append(userName, comment);
-    $('#comments').append(singleComment);
-
-    
-    /*
-    $.ajax({
-        type: "POST",
-        url: "../Server/serviceHandler.php",
-        cache: false,
-        data: {method: "queryCommentsByAppointmentId", param: id},
-        dataType: "json",
-        success: function (response) {
-            
-        }
-    });
-*/
-}
  
 function showSingleAppointment(event, expirationStatus) {
     $("#fullPage").hide();
@@ -349,25 +302,29 @@ function showSingleAppointment(event, expirationStatus) {
         formRow.append(nameColon);
     }
 
-    let commentSection = $(`
-        <div class="container mt-3" id="commentSection">
-            <h3>Comments</h3>
-            <div id="comments"></div>
-        </div>`
-    );
+   
 
-    schedule.append(backButton, deleteButton, titleRow, formRow, commentSection);
+    schedule.append(backButton, deleteButton, titleRow, formRow);
 
     if (expirationStatus != "expired") {
+       
+        let commentSection = $(`
+        <div class="container mt-3" id="commentSection">
+            <h3>Add a comment</h3>
+            <div id="comments"></div>
+        </div>`
+        );
         let commentTextarea = `<textarea class="form-control mb-2" placeholder="Add comment" name="comment"></textarea>`;
+        
+        schedule.append(commentSection);
         $("#commentSection").append(commentTextarea);
     }
 
-    let appointmentId; // Variable to store the appointment ID
+    let appointmentId; 
 
     getAppointmentId(title, function(appointmentIdResult) {
-        appointmentId = appointmentIdResult; // Save the appointment ID
-        showTimeslots(appointmentId);
+        appointmentId = appointmentIdResult; 
+        showTimeslots(appointmentId, expirationStatus);
     });
 
     let details = $('<div id="details"></div>').append(schedule);
@@ -383,9 +340,7 @@ function showSingleAppointment(event, expirationStatus) {
         e.preventDefault();
         if (appointmentId) { // Ensure appointmentId is defined
             deleteAppointment(appointmentId, function() {
-            // Success callback: after deletion, show overview
             showOverview();
-            // Remove the appointment detail view
             $("#fullPage").show();
             $("#details").remove();
                 });
@@ -403,10 +358,6 @@ function showSingleAppointment(event, expirationStatus) {
         $("#details").remove();
     });
 }
-
-
-
-
 
 function submitAppointmentBooking(e){
     let formDataArray = $(e.target).serializeArray();
@@ -432,7 +383,6 @@ function submitAppointmentBooking(e){
     };
 
     //console.log(userData);
-    
 
     $.ajax({
         type: "POST",
