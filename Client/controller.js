@@ -103,13 +103,10 @@ function addOneMoreDateInNewAppointmentForm() {
 }
 
 function submitNewAppointment(e) {
-    //console.log("submitNewAppointment");
     e.preventDefault();
   
     let appointmentDates = [];
-    //console.log($('.oneAppointmentContainer'));
     $('.oneAppointmentContainer').each(function() {
-        //console.log("an Element in the oneAppointmentContainerArray");
         let date = $(this).find('.dateInput').val();
         let startTime = $(this).find('.startTimeInput').val();
         let endTime = $(this).find('.endTimeInput').val();
@@ -119,8 +116,6 @@ function submitNewAppointment(e) {
             endTime: endTime
         });
     });
-
-    
 
     let formData = {
         title: $('#create-titleInput').val(),
@@ -133,8 +128,6 @@ function submitNewAppointment(e) {
 
     //console.log(formData);
 
-
-    // Make an AJAX request to add the new appointment
     $.ajax({
         type: "POST",
         url: '../Server/serviceHandler.php',
@@ -144,7 +137,7 @@ function submitNewAppointment(e) {
         },
         dataType: 'json',
         success: function(response) {
-            //console.log('New appointment added successfully:', response);
+            console.log('New appointment added successfully:', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -152,14 +145,12 @@ function submitNewAppointment(e) {
         }
 });
 
-  // Remove the form after submission
   $('#createForm').remove();
   $("#newAppointment").show();
 }
 
 
 function showTimeslots(appointmentId, expirationStatus) {
-    // console.log("showTimeslots")
     appointmentId = parseInt(appointmentId);
     $.ajax({
         type: "POST",
@@ -168,7 +159,6 @@ function showTimeslots(appointmentId, expirationStatus) {
         data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            
             response.forEach((timeslot, index) => {
                 var timeslotHTML = `
                     <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
@@ -184,13 +174,11 @@ function showTimeslots(appointmentId, expirationStatus) {
                                 <label for="endTime">End Time: ${timeslot.end_time}</label>
                             </div>
                         </div>
-                        
-                    </div>
-                `;
+                    </div>`;
             
                 $("#formRow").append(timeslotHTML);
 
-                console.log(expirationStatus);
+                // show input field if not expired 
                 if (expirationStatus != "expired") {
                     let input = `<div>
                                     <input class="checkbox" name="${timeslot.id}" type="checkbox" />
@@ -198,33 +186,12 @@ function showTimeslots(appointmentId, expirationStatus) {
                     $("#singleAppointmentOption" + index).append(input);
                 }
 
-                let userinformation =` <!-- Container for user information -->
-                <hr><div id="userInformation${index}" class="user-information"></div>`;
+                let userinformation =`<hr><div id="userInformation${index}" class="user-information"></div>`;
                 $("#singleAppointmentOption" + index).append(userinformation);
             
                 // Append users who voted underneath each timeslot
-                whoVotedThis(timeslot.id, function(users_who_voted) {
-                    var usersHTML = '';
-                    users_who_voted.forEach((user, index) => {
-                        usersHTML += `
-                            <div class="user-info">
-                                <p>Username: ${user.username}</p>
-                                <p>Comment: ${user.comment}</p>
-                            </div>`;
-                        // Add divider between users
-                        if (index < users_who_voted.length - 1) {
-                            usersHTML += `<hr>`;
-                        }
-                    });
-                    // Add divider between timeslot and users
-                    usersHTML += `<hr>`;
-                    $("#userInformation" + index).html(usersHTML);
-                }); 
+                whoVotedThis(timeslot.id, index); 
             });
-            
-                
-
-                
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -232,7 +199,7 @@ function showTimeslots(appointmentId, expirationStatus) {
     });
 }
 
-function whoVotedThis(timeslotId, callback) {
+function whoVotedThis(timeslotId, index) {
     timeslotId = parseInt(timeslotId);
     $.ajax({
         type: "POST",
@@ -241,8 +208,22 @@ function whoVotedThis(timeslotId, callback) {
         data: {method: "whoVotedThis", param: timeslotId},
         dataType: "json",
         success: function(response) {
-            callback(response);
-             
+                let usersWhoVoted = response; 
+                var usersHTML = '';
+                usersWhoVoted.forEach((user, index) => {
+                    usersHTML += `
+                        <div class="user-info">
+                            <p>Username: ${user.username}</p>
+                            <p>Comment: ${user.comment}</p>
+                        </div>`;
+                    // Add divider between users
+                    if (index < usersWhoVoted.length - 1) {
+                        usersHTML += `<hr>`;
+                    }
+                });
+                // Add divider between timeslot and users
+                usersHTML += `<hr>`;
+                $("#userInformation" + index).html(usersHTML);
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -250,7 +231,7 @@ function whoVotedThis(timeslotId, callback) {
     });
 }
 
-function deleteAppointment(appointmentId, callback) {
+function deleteAppointment(appointmentId) {
     appointmentId = parseInt(appointmentId);
     $.ajax({
         type: "POST",
@@ -259,10 +240,10 @@ function deleteAppointment(appointmentId, callback) {
         data: {method: "deleteAppointment", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            console.log(response);
-            if (typeof callback === "function") {
-                callback(); // Call the callback function if provided
-            }
+            console.log("Deleted Item");
+            showOverview();
+            $("#fullPage").show();
+            $("#details").remove();
         },
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
@@ -281,7 +262,6 @@ function getAppointmentId(title, callback){
         success: function (response) {
             callback(response[0].id);
         }
-        
     });
 }
 
@@ -297,10 +277,11 @@ function showSingleAppointment(event, expirationStatus) {
             <h3 class="card-title">` + title + `</h3>
         </div>`
     );
-
     let backButton = $('<button id="back">Back</button>');
     let deleteButton = $('<button id="delete">Delete Appointment</button>');
     let formRow = $('<div class="row" id="formRow"></div>');
+    
+    //if expired - don't add name and submit section
     if (expirationStatus != "expired") {
         let nameColon = $(`
             <div class="col">
@@ -315,10 +296,9 @@ function showSingleAppointment(event, expirationStatus) {
         formRow.append(nameColon);
     }
 
-    
-
     schedule.append(backButton, deleteButton, titleRow, formRow);
 
+    // if is expired - don't add comment section
     if (expirationStatus != "expired") {
         let commentSection = $(`
         <div class="container mt-3" id="commentSection">
@@ -331,10 +311,10 @@ function showSingleAppointment(event, expirationStatus) {
         $("#commentSection").append(commentTextarea);
     }
 
-    let appointmentId; // Variable to store the appointment ID
+    let appointmentId; 
 
     getAppointmentId(title, function(appointmentIdResult) {
-        appointmentId = appointmentIdResult; // Save the appointment ID
+        appointmentId = appointmentIdResult; 
         showTimeslots(appointmentId, expirationStatus);
     });
 
@@ -349,14 +329,9 @@ function showSingleAppointment(event, expirationStatus) {
 
     $('#delete').on('click', function(e) {
         e.preventDefault();
-        if (appointmentId) { // Ensure appointmentId is defined
-            deleteAppointment(appointmentId, function() {
-            // Success callback: after deletion, show overview
-            showOverview();
-            // Remove the appointment detail view
-            $("#fullPage").show();
-            $("#details").remove();
-                });
+        // Ensure appointmentId is defined
+        if (appointmentId) { 
+            deleteAppointment(appointmentId);
         } else {
             console.error("Appointment ID not found.");
         }
