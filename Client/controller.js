@@ -1,20 +1,16 @@
 let data = undefined;
 
+// load page 
 $(document).ready(function () {
     $("#searchResult").hide();
-    $("#btn_Search").click(function (e) {
-       loaddata($("#seachfield").val());
-    });
-
     $("#newAppointment").click(function (e) {
         showNewAppointmentForm();
     });
-
-
     showOverview();
 });
 
 function showOverview() {
+    // get appointments from server 
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -25,7 +21,8 @@ function showOverview() {
             var appointmentList = $('#appointmentList');
             appointmentList.empty();
 
-            $.each(response, function( index, appointment ) {
+            response.forEach((appointment) =>  {
+                // check if expiration date is before current date
                 var expiredText = 'active';
                 if (new Date(appointment.expiration_date) < new Date()) {
                 expiredText = 'expired';
@@ -40,9 +37,11 @@ function showOverview() {
                     <div>Expiration status: ${expiredText}</div>
                 </div>
                 `;
+
                 appointmentList.append(appointmentHTML);
             });
         },
+        // jqXHR = jQuery XMLHttpRequest object
         error: function(jqXHR, textStatus, errorThrown) {
             console.error("AJAX error:", textStatus, ":", errorThrown);
         }
@@ -80,6 +79,7 @@ function showNewAppointmentForm() {
     $('#dismiss-appointment').on('click', function(e) {
         e.preventDefault();
         $('#createForm').remove();
+        //show newAppointment button
         $("#newAppointment").show();
     });
 
@@ -101,13 +101,13 @@ function addOneMoreDateInNewAppointmentForm() {
 }
 
 function submitNewAppointment(e) {
-    //console.log("submitNewAppointment");
     e.preventDefault();
   
     let appointmentDates = [];
-    //console.log($('.oneAppointmentContainer'));
+
+    // get all different appointment options and push them as an object in the appointmentDates array
     $('.oneAppointmentContainer').each(function() {
-        //console.log("an Element in the oneAppointmentContainerArray");
+        // select the .dateInput element in each appointment
         let date = $(this).find('.dateInput').val();
         let startTime = $(this).find('.startTimeInput').val();
         let endTime = $(this).find('.endTimeInput').val();
@@ -126,8 +126,8 @@ function submitNewAppointment(e) {
         dates: appointmentDates,
         expiration_date: $('#create-expirationDateInput').val()
     };
-    //console.log(formData);
 
+    // post form data to the server
     $.ajax({
         type: "POST",
         url: '../Server/serviceHandler.php',
@@ -137,7 +137,7 @@ function submitNewAppointment(e) {
         },
         dataType: 'json',
         success: function(response) {
-            //console.log('New appointment added successfully:', response);
+            console.log('New appointment added successfully:', response);
             showOverview();
         },
         error: function(jqXHR, textStatus, errorThrown) {
@@ -151,8 +151,9 @@ function submitNewAppointment(e) {
 
 
 function showTimeslots(appointmentId, expirationStatus) {
-    // console.log("showTimeslots")
     appointmentId = parseInt(appointmentId);
+
+    // search for all timeSlots with appointmentId 
     $.ajax({
         type: "POST",
         url: "../Server/serviceHandler.php",
@@ -160,12 +161,11 @@ function showTimeslots(appointmentId, expirationStatus) {
         data: {method: "queryTimeslotsByAppointmentId", param: appointmentId},
         dataType: "json",
         success: function(response) {
-            
             response.forEach((timeslot, index) => {
                 var timeslotHTML = `
                     <div class="singleAppointmentOption col-sm-6 col-md-3 col-xl-2" id="singleAppointmentOption${index}">
                         <div>
-                            <h2>Option ${index + 1}</h2>
+                            <h4>Option ${index + 1}</h4>
                             <div class="informationSingleTimeSlot">
                                 <label for="${timeslot.id}"> Date: ${timeslot.date}</label>
                             </div>
@@ -182,7 +182,7 @@ function showTimeslots(appointmentId, expirationStatus) {
             
                 $("#formRow").append(timeslotHTML);
             
-                console.log(expirationStatus);
+                // if is not expired: create an input field 
                 if (expirationStatus != "expired") {
                     let input = `<div>
                                     <input class="checkbox" name="${timeslot.id}" type="checkbox" />
@@ -190,8 +190,7 @@ function showTimeslots(appointmentId, expirationStatus) {
                     $("#singleAppointmentOption" + index).append(input);
                 }
 
-                let userinformation =` <!-- Container for user information -->
-                <hr><div id="userInformation${index}" class="user-information"></div>`;
+                let userinformation =`<hr><div id="userInformation${index}" class="user-information"></div>`;
                 $("#singleAppointmentOption" + index).append(userinformation);
             
                 // Append users who voted underneath each timeslot
